@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import Image from "next/image";
 
+import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -49,7 +51,14 @@ const steps = [
 
 /* ================= POSTURE OPTIONS ================= */
 
-const postureOptions: Record<string, any[]> = {
+type PostureOption = {
+  value: number;
+  label: string;
+  desc: string;
+  img: string;
+};
+
+const postureOptions: Record<string, PostureOption[]> = {
   neck: [
     { value: 0, label: "Neutral", desc: "Neck is in neutral position", img: "/images/posture/11.png" },
     { value: 1, label: "Moderate", desc: "Neck moderately bent", img: "/images/posture/12.png" },
@@ -168,16 +177,51 @@ const mdlOptions = [
 
 /* ================= COMPONENT ================= */
 
+const GaugeChart = ({ score }: { score: number }) => {
+  const data = [{ name: "score", value: score }];
+
+  const getColor = (score: number) => {
+    if (score <= 14) return "#22c55e"; // green
+    if (score <= 40) return "#3b82f6"; // blue
+    if (score <= 67) return "#eab308"; // yellow
+    if (score <= 93) return "#f97316"; // orange
+    return "#ef4444"; // red
+  };
+
+  return (
+    <div className="flex flex-col items-center">
+      <RadialBarChart
+        width={250}
+        height={250}
+        innerRadius="70%"
+        outerRadius="100%"
+        data={data}
+        startAngle={180}
+        endAngle={0}
+      >
+        <PolarAngleAxis type="number" domain={[0, 108]} angleAxisId={0} tick={false} />
+
+        <RadialBar background dataKey="value" cornerRadius={10} fill={getColor(score)} />
+      </RadialBarChart>
+
+      <div className="-mt-20 text-center">
+        <p className="text-gray-500 text-sm">Risk Score</p>
+        <h2 className="text-3xl font-bold">{score}</h2>
+      </div>
+    </div>
+  );
+};
+
 export default function ErgonomicPage() {
   const [step, setStep] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
   const [scores, setScores] = useState<Record<StepKey, ScoreType>>(() => {
-    const init: any = {};
+    const init: Partial<Record<StepKey, ScoreType>> = {};
     steps.forEach((s) => {
       init[s.key] = s.type === "body" ? { posture: 0, repetition: 0, mdl: 0 } : { value: 0 };
     });
-    return init;
+    return init as Record<StepKey, ScoreType>;
   });
 
   const current = steps[step];
@@ -211,22 +255,57 @@ export default function ErgonomicPage() {
     return total + s.posture + s.repetition + s.mdl;
   }, 0);
 
+  const getRiskLevel = (score: number) => {
+    if (score <= 14) return "Negligible Risk";
+    if (score <= 40) return "Low Risk";
+    if (score <= 67) return "Medium Risk";
+    if (score <= 93) return "High Risk";
+    return "Very High Risk";
+  };
+
+  const getRiskColor = (level: string) => {
+    switch (level) {
+      case "Negligible Risk":
+        return "bg-green-100 text-green-700";
+      case "Low Risk":
+        return "bg-blue-100 text-blue-700";
+      case "Medium Risk":
+        return "bg-yellow-100 text-yellow-700";
+      case "High Risk":
+        return "bg-orange-100 text-orange-700";
+      case "Very High Risk":
+        return "bg-red-100 text-red-700";
+      default:
+        return "";
+    }
+  };
+
+  const riskLevel = getRiskLevel(totalScore);
+
   /* ================= UI ================= */
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 font-sans">
       {isFinished ? (
-        <Card className="w-full max-w-5xl shadow-xl rounded-3xl p-8 bg-white">
+        <Card className="w-full max-w-6xl shadow-2xl rounded-3xl p-8 bg-gradient-to-br from-white to-gray-50">
           <CardHeader>
             <CardTitle className="text-center text-3xl font-bold mb-4 text-blue-600">Final Result</CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-8">
-            <div className="bg-gray-100 p-6 rounded-xl border shadow-inner">
-              <div className="flex justify-between text-lg font-semibold text-gray-700">
-                <span>Total Score</span>
-                <span className="text-blue-600">{totalScore}</span>
+            <div className="flex justify-center">
+              <GaugeChart score={totalScore} />
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border shadow flex justify-between items-center">
+              <div>
+                <p className="text-gray-500 text-sm">Total Score</p>
+                <h2 className="text-4xl font-bold text-blue-600">{totalScore}</h2>
               </div>
+
+              <span className={`px-5 py-2 rounded-full text-sm font-semibold ${getRiskColor(riskLevel)}`}>
+                {riskLevel}
+              </span>
             </div>
 
             <div className="overflow-x-auto rounded-xl border shadow-inner">
@@ -261,6 +340,41 @@ export default function ErgonomicPage() {
                         <td className="p-4 text-center">{task.value}</td>
                         <td className="p-4 text-center">-</td>
                         <td className="p-4 text-center font-semibold">{task.value}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="rounded-xl border shadow overflow-hidden">
+              <table className="min-w-full">
+                <thead className="bg-gray-800 text-white">
+                  <tr>
+                    <th className="p-4 text-left">Risk Level</th>
+                    <th className="p-4 text-center">Final Score</th>
+                    <th className="p-4 text-left">Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {[
+                    { level: "Negligible Risk", range: "0 - 14", action: "No action required" },
+                    { level: "Low Risk", range: "15 - 40", action: "Change may be required" },
+                    { level: "Medium Risk", range: "41 - 67", action: "Vigilance, improvements to consider" },
+                    { level: "High Risk", range: "68 - 93", action: "Improvements needed" },
+                    { level: "Very High Risk", range: "94 - 108", action: "Immediate changes" },
+                  ].map((r) => {
+                    const isActive = r.level === riskLevel;
+
+                    return (
+                      <tr
+                        key={r.level}
+                        className={`transition ${isActive ? "bg-blue-100 font-bold scale-[1.01]" : "hover:bg-gray-50"}`}
+                      >
+                        <td className="p-4">{r.level}</td>
+                        <td className="p-4 text-center">{r.range}</td>
+                        <td className="p-4">{r.action}</td>
                       </tr>
                     );
                   })}
