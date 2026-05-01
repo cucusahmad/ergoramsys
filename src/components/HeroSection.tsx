@@ -24,6 +24,18 @@ export default function HeroSection() {
           transition={{ duration: 0.8 }}
           className="flex flex-col gap-6"
         >
+          {/* 🔥 LOGO ADDED HERE */}
+          <div className="flex items-center gap-3">
+            <Image
+              src="/images/logo.png"
+              alt="ErgoRAMMSYs Logo"
+              width={200}
+              height={40}
+              className="object-contain"
+              priority
+            />
+          </div>
+
           <Badge className="w-fit gap-2 px-4 py-1 text-sm bg-indigo-50 text-indigo-600 border border-indigo-100">
             <School size={16} />
             Ergonomic Risk Assessment System
