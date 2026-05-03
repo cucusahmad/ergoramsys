@@ -15,13 +15,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 /* ================= TYPES ================= */
 
 type UserInfo = {
-  name: string;
-  company: string;
-  placeOfBirth: string;
-  dateOfBirth: string;
-  address: string;
-  phone: string;
-  email: string;
+  observerName: string;
+  observerPosition: string;
+  organization: string;
+  assessmentDate: string;
+  workerName: string;
+  workerPosition: string;
+  workerAge: string;
+  workerExperience: string;
 };
 
 type StepType = "body" | "task";
@@ -244,15 +245,16 @@ export default function ErgonomicPage() {
   const [screen, setScreen] = useState<"form" | "assessment" | "result">("form");
   const [step, setStep] = useState(0);
 
-  // Data Biodata
+  // Data Biodata Baru
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: "",
-    company: "",
-    placeOfBirth: "",
-    dateOfBirth: "",
-    address: "",
-    phone: "",
-    email: "",
+    observerName: "",
+    observerPosition: "",
+    organization: "",
+    assessmentDate: "",
+    workerName: "",
+    workerPosition: "",
+    workerAge: "",
+    workerExperience: "",
   });
 
   const [scores, setScores] = useState<Record<StepKey, ScoreType>>(() => {
@@ -303,7 +305,7 @@ export default function ErgonomicPage() {
     setScreen("form");
     setStep(0);
     // Jika ingin mereset biodata, uncomment baris di bawah ini:
-    // setUserInfo({ name: "", company: "", placeOfBirth: "", dateOfBirth: "", address: "", phone: "", email: "" });
+    // setUserInfo({ observerName: "", observerPosition: "", organization: "", assessmentDate: "", workerName: "", workerPosition: "", workerAge: "", workerExperience: "" });
 
     // Reset Score
     const init: Partial<Record<StepKey, ScoreType>> = {};
@@ -318,7 +320,6 @@ export default function ErgonomicPage() {
     if (s.type === "task") return total + (score as TaskScore).value;
 
     const body = score as BodyScore;
-    // Ubah Math.max menjadi penjumlahan (+)
     const activeMdl = "isBilateral" in s && s.isBilateral ? body.mdlLeft + body.mdlRight : body.mdl;
 
     return total + body.posture + body.repetition + activeMdl;
@@ -328,7 +329,6 @@ export default function ErgonomicPage() {
     const val = scores[current.key];
     if (current.type === "body") {
       const body = val as BodyScore;
-      // Ubah Math.max menjadi penjumlahan (+)
       const activeMdl = "isBilateral" in current && current.isBilateral ? body.mdlLeft + body.mdlRight : body.mdl;
       return body.posture + body.repetition + activeMdl;
     }
@@ -365,7 +365,6 @@ export default function ErgonomicPage() {
   const activeGender = loadValue < 3 ? "Male" : "Female";
 
   /* ================= UI STYLES ================= */
-  // Class Tailwind standar untuk input form
   const inputClass =
     "flex h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm";
 
@@ -375,93 +374,116 @@ export default function ErgonomicPage() {
       {screen === "form" && (
         <Card className="w-full max-w-2xl shadow-xl rounded-3xl p-8 bg-white">
           <CardHeader className="mb-4">
-            <CardTitle className="text-center text-3xl font-bold text-gray-800">User Information</CardTitle>
-            <p className="text-center text-gray-500 mt-2">Please fill in your details before starting the assessment</p>
+            <CardTitle className="text-center text-3xl font-bold text-gray-800">Information Setup</CardTitle>
+            <p className="text-center text-gray-500 mt-2">Please fill in the details before starting the assessment</p>
           </CardHeader>
-          <CardContent className="space-y-5">
-            <div>
-              <Label className="text-gray-700 font-semibold mb-2 block">Full Name</Label>
-              <input
-                type="text"
-                name="name"
-                value={userInfo.name}
-                onChange={handleUserInputChange}
-                className={inputClass}
-                placeholder="e.g. John Doe"
-              />
-            </div>
-
-            <div>
-              <Label className="text-gray-700 font-semibold mb-2 block">Company / Organization</Label>
-              <input
-                type="text"
-                name="company"
-                value={userInfo.company}
-                onChange={handleUserInputChange}
-                className={inputClass}
-                placeholder="e.g. Tech Corp"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <CardContent className="space-y-8">
+            {/* A. Observer Information */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-blue-600 border-b pb-2">A. Observer Information</h3>
               <div>
-                <Label className="text-gray-700 font-semibold mb-2 block">Place of Birth</Label>
+                <Label className="text-gray-700 font-semibold mb-2 block">Observer Name</Label>
                 <input
                   type="text"
-                  name="placeOfBirth"
-                  value={userInfo.placeOfBirth}
+                  name="observerName"
+                  value={userInfo.observerName}
                   onChange={handleUserInputChange}
                   className={inputClass}
-                  placeholder="e.g. New York"
+                  placeholder="e.g. John Doe"
                 />
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <Label className="text-gray-700 font-semibold mb-2 block">Position / Job Title (Observer)</Label>
+                  <input
+                    type="text"
+                    name="observerPosition"
+                    value={userInfo.observerPosition}
+                    onChange={handleUserInputChange}
+                    className={inputClass}
+                    placeholder="e.g. Ergonomist"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-700 font-semibold mb-2 block">Organization / Company</Label>
+                  <input
+                    type="text"
+                    name="organization"
+                    value={userInfo.organization}
+                    onChange={handleUserInputChange}
+                    className={inputClass}
+                    placeholder="e.g. Tech Corp"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* B. Assessment Information */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-blue-600 border-b pb-2">B. Assessment Information</h3>
               <div>
-                <Label className="text-gray-700 font-semibold mb-2 block">Date of Birth</Label>
+                <Label className="text-gray-700 font-semibold mb-2 block">Assessment Date</Label>
                 <input
                   type="date"
-                  name="dateOfBirth"
-                  value={userInfo.dateOfBirth}
+                  name="assessmentDate"
+                  value={userInfo.assessmentDate}
                   onChange={handleUserInputChange}
                   className={inputClass}
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <Label className="text-gray-700 font-semibold mb-2 block">Phone Number</Label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={userInfo.phone}
-                  onChange={handleUserInputChange}
-                  className={inputClass}
-                  placeholder="e.g. +1 234 567 890"
-                />
+            {/* C. Worker Information */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-blue-600 border-b pb-2">C. Worker Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <Label className="text-gray-700 font-semibold mb-2 block">Worker Name</Label>
+                  <input
+                    type="text"
+                    name="workerName"
+                    value={userInfo.workerName}
+                    onChange={handleUserInputChange}
+                    className={inputClass}
+                    placeholder="e.g. Jane Smith"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-700 font-semibold mb-2 block">Worker Position / Job Title</Label>
+                  <input
+                    type="text"
+                    name="workerPosition"
+                    value={userInfo.workerPosition}
+                    onChange={handleUserInputChange}
+                    className={inputClass}
+                    placeholder="e.g. Assembly Operator"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-700 font-semibold mb-2 block">Age (years)</Label>
+                  <input
+                    type="number"
+                    name="workerAge"
+                    value={userInfo.workerAge}
+                    onChange={handleUserInputChange}
+                    className={inputClass}
+                    placeholder="e.g. 30"
+                    min={0}
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-700 font-semibold mb-2 block">Work Experience (years)</Label>
+                  <input
+                    type="number"
+                    name="workerExperience"
+                    value={userInfo.workerExperience}
+                    onChange={handleUserInputChange}
+                    className={inputClass}
+                    placeholder="e.g. 5"
+                    min={0}
+                  />
+                </div>
               </div>
-              <div>
-                <Label className="text-gray-700 font-semibold mb-2 block">Email Address</Label>
-                <input
-                  type="email"
-                  name="email"
-                  value={userInfo.email}
-                  onChange={handleUserInputChange}
-                  className={inputClass}
-                  placeholder="e.g. john@example.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-gray-700 font-semibold mb-2 block">Address</Label>
-              <textarea
-                name="address"
-                value={userInfo.address}
-                onChange={handleUserInputChange}
-                rows={3}
-                className={`${inputClass} h-auto resize-none`}
-                placeholder="Your full address..."
-              />
             </div>
 
             <div className="pt-6">
@@ -485,34 +507,56 @@ export default function ErgonomicPage() {
 
           <CardContent className="space-y-8">
             {/* DATA PENGGUNA YANG DITAMPILKAN */}
-            <div className="bg-white p-6 rounded-2xl border shadow-sm">
-              <h3 className="text-xl font-bold mb-4 text-gray-800 border-b pb-3">User Profile</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-500 font-medium">Name</span>
-                  <span className="text-lg font-semibold text-gray-800">{userInfo.name || "-"}</span>
+            <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-6">
+              <div>
+                <h3 className="text-lg font-bold mb-3 text-gray-800 border-b pb-2">A. Observer Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="flex flex-col">
+                    <span className="text-sm text-gray-500 font-medium">Observer Name</span>
+                    <span className="text-md font-semibold text-gray-800">{userInfo.observerName || "-"}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm text-gray-500 font-medium">Position / Job Title</span>
+                    <span className="text-md font-semibold text-gray-800">{userInfo.observerPosition || "-"}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm text-gray-500 font-medium">Organization / Company</span>
+                    <span className="text-md font-semibold text-gray-800">{userInfo.organization || "-"}</span>
+                  </div>
                 </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-bold mb-3 text-gray-800 border-b pb-2">B. Assessment Information</h3>
                 <div className="flex flex-col">
-                  <span className="text-sm text-gray-500 font-medium">Company</span>
-                  <span className="text-lg font-semibold text-gray-800">{userInfo.company || "-"}</span>
+                  <span className="text-sm text-gray-500 font-medium">Assessment Date</span>
+                  <span className="text-md font-semibold text-gray-800">{userInfo.assessmentDate || "-"}</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-500 font-medium">Place, Date of Birth</span>
-                  <span className="text-lg font-semibold text-gray-800">
-                    {userInfo.placeOfBirth || "-"}, {userInfo.dateOfBirth || "-"}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-500 font-medium">Phone Number</span>
-                  <span className="text-lg font-semibold text-gray-800">{userInfo.phone || "-"}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-500 font-medium">Email</span>
-                  <span className="text-lg font-semibold text-gray-800">{userInfo.email || "-"}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-500 font-medium">Address</span>
-                  <span className="text-lg font-semibold text-gray-800">{userInfo.address || "-"}</span>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-bold mb-3 text-gray-800 border-b pb-2">C. Worker Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="flex flex-col">
+                    <span className="text-sm text-gray-500 font-medium">Worker Name</span>
+                    <span className="text-md font-semibold text-gray-800">{userInfo.workerName || "-"}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm text-gray-500 font-medium">Worker Position</span>
+                    <span className="text-md font-semibold text-gray-800">{userInfo.workerPosition || "-"}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm text-gray-500 font-medium">Age</span>
+                    <span className="text-md font-semibold text-gray-800">
+                      {userInfo.workerAge ? `${userInfo.workerAge} years` : "-"}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm text-gray-500 font-medium">Work Experience</span>
+                    <span className="text-md font-semibold text-gray-800">
+                      {userInfo.workerExperience ? `${userInfo.workerExperience} years` : "-"}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -547,7 +591,6 @@ export default function ErgonomicPage() {
                     if (s.type === "body") {
                       const body = val as BodyScore;
                       const isBilat = "isBilateral" in s && s.isBilateral;
-                      // Ubah Math.max menjadi penjumlahan (+)
                       const activeMdl = isBilat ? body.mdlLeft + body.mdlRight : body.mdl;
                       const total = body.posture + body.repetition + activeMdl;
 
@@ -708,7 +751,7 @@ export default function ErgonomicPage() {
 
                 {/* REPETITION & MDL */}
                 <div className="space-y-4">
-                  {/* Repetition (Hanya dirender jika opsinya tersedia) */}
+                  {/* Repetition */}
                   {repetitionOptions[current.key] && (
                     <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
                       <h3 className="text-lg font-semibold mb-4 text-gray-700">Repetition</h3>
