@@ -169,7 +169,7 @@ const taskOptionsMap: Record<string, TaskOption[]> = {
   ],
   load: [], // Handled by custom UI
   jobDemand: [
-    { label: "Lower arm is positioned across the midline or extended to the side of the body" },
+    { label: "Minimal physical, mental, or emotional effort needed" },
     { label: "Manageable levels of physical, mental, or emotional effort required" },
     { label: "Significant physical, mental, or emotional effort required" },
   ],
