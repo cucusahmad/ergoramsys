@@ -27,7 +27,7 @@ export default function HeroSection() {
           {/* 🔥 LOGO ADDED HERE */}
           <div className="flex items-center gap-3">
             <Image
-              src="/images/logo.png"
+              src="/images/logobaru.png"
               alt="ErgoRAMMSYs Logo"
               width={200}
               height={40}
@@ -55,7 +55,7 @@ export default function HeroSection() {
 
           <div className="flex flex-wrap gap-4">
             <Button asChild size="lg" className="px-8 py-6 rounded-xl bg-indigo-500 hover:bg-indigo-600 shadow-sm">
-              <a href="/asessment">Get Started</a>
+              <a href="/auth/login">Get Started</a>
             </Button>
 
             <Button

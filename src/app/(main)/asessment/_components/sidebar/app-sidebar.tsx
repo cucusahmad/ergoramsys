@@ -81,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton asChild>
               <Link prefetch={false} href="/dashboard/default">
                 <Command />
-                <Image src="/images/logo.png" alt="Logo" width={120} height={40} className="object-contain" />
+                <Image src="/images/logobaru.png" alt="Logo" width={120} height={40} className="object-contain" />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
