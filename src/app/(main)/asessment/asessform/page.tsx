@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+
 import Image from "next/image";
+
 import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -181,9 +184,18 @@ const taskOptionsMap: Record<string, TaskOption[]> = {
     { label: "Feelings of frustration or dissatisfaction with work" },
   ],
   socialSupport: [
-    { label: "Strong support from supervisors and colleagues,open communication channels, access to training and resources,and mentorship programs and teamwork being encouraged" },
-    { label: "Some support is available from supervisors and peers, with occasional communication and feedback, but there is limited access to training resources." },
-    { label: "There is minimal or no support from supervisors and colleagues, accompanied by poor communication and feedback, as well as a lack of training and resources" },
+    {
+      label:
+        "Strong support from supervisors and colleagues,open communication channels, access to training and resources,and mentorship programs and teamwork being encouraged",
+    },
+    {
+      label:
+        "Some support is available from supervisors and peers, with occasional communication and feedback, but there is limited access to training resources.",
+    },
+    {
+      label:
+        "There is minimal or no support from supervisors and colleagues, accompanied by poor communication and feedback, as well as a lack of training and resources",
+    },
   ],
 };
 
@@ -251,9 +263,7 @@ export default function ErgonomicPage() {
   const [scores, setScores] = useState<Record<StepKey, ScoreType>>(() => {
     const init: Partial<Record<StepKey, ScoreType>> = {};
     steps.forEach((s) => {
-      init[s.key] = s.type === "body" 
-        ? { posture: 0, repetition: 0, mdl: 0, mdlLeft: 0, mdlRight: 0 } 
-        : { value: 0 };
+      init[s.key] = s.type === "body" ? { posture: 0, repetition: 0, mdl: 0, mdlLeft: 0, mdlRight: 0 } : { value: 0 };
     });
     return init as Record<StepKey, ScoreType>;
   });
@@ -299,13 +309,11 @@ export default function ErgonomicPage() {
     setStep(0);
     // Jika ingin mereset biodata, uncomment baris di bawah ini:
     // setUserInfo({ name: "", company: "", placeOfBirth: "", dateOfBirth: "", address: "", phone: "", email: "" });
-    
+
     // Reset Score
     const init: Partial<Record<StepKey, ScoreType>> = {};
     steps.forEach((s) => {
-      init[s.key] = s.type === "body" 
-        ? { posture: 0, repetition: 0, mdl: 0, mdlLeft: 0, mdlRight: 0 } 
-        : { value: 0 };
+      init[s.key] = s.type === "body" ? { posture: 0, repetition: 0, mdl: 0, mdlLeft: 0, mdlRight: 0 } : { value: 0 };
     });
     setScores(init as Record<StepKey, ScoreType>);
   };
@@ -313,10 +321,11 @@ export default function ErgonomicPage() {
   const totalScore = steps.reduce((total, s) => {
     const score = scores[s.key];
     if (s.type === "task") return total + (score as TaskScore).value;
-  
+
     const body = score as BodyScore;
-    const activeMdl = "isBilateral" in s && s.isBilateral ? Math.max(body.mdlLeft, body.mdlRight) : body.mdl;
-    
+    // Ubah Math.max menjadi penjumlahan (+)
+    const activeMdl = "isBilateral" in s && s.isBilateral ? body.mdlLeft + body.mdlRight : body.mdl;
+
     return total + body.posture + body.repetition + activeMdl;
   }, 0);
 
@@ -324,9 +333,8 @@ export default function ErgonomicPage() {
     const val = scores[current.key];
     if (current.type === "body") {
       const body = val as BodyScore;
-      const activeMdl = "isBilateral" in current && current.isBilateral 
-        ? Math.max(body.mdlLeft, body.mdlRight) 
-        : body.mdl;
+      // Ubah Math.max menjadi penjumlahan (+)
+      const activeMdl = "isBilateral" in current && current.isBilateral ? body.mdlLeft + body.mdlRight : body.mdl;
       return body.posture + body.repetition + activeMdl;
     }
     return (val as TaskScore).value;
@@ -363,11 +371,11 @@ export default function ErgonomicPage() {
 
   /* ================= UI STYLES ================= */
   // Class Tailwind standar untuk input form
-  const inputClass = "flex h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm";
+  const inputClass =
+    "flex h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm";
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 font-sans">
-      
       {/* ================= SCREEN: FORM BIODATA ================= */}
       {screen === "form" && (
         <Card className="w-full max-w-2xl shadow-xl rounded-3xl p-8 bg-white">
@@ -378,43 +386,94 @@ export default function ErgonomicPage() {
           <CardContent className="space-y-5">
             <div>
               <Label className="text-gray-700 font-semibold mb-2 block">Full Name</Label>
-              <input type="text" name="name" value={userInfo.name} onChange={handleUserInputChange} className={inputClass} placeholder="e.g. John Doe" />
+              <input
+                type="text"
+                name="name"
+                value={userInfo.name}
+                onChange={handleUserInputChange}
+                className={inputClass}
+                placeholder="e.g. John Doe"
+              />
             </div>
 
             <div>
               <Label className="text-gray-700 font-semibold mb-2 block">Company / Organization</Label>
-              <input type="text" name="company" value={userInfo.company} onChange={handleUserInputChange} className={inputClass} placeholder="e.g. Tech Corp" />
+              <input
+                type="text"
+                name="company"
+                value={userInfo.company}
+                onChange={handleUserInputChange}
+                className={inputClass}
+                placeholder="e.g. Tech Corp"
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <Label className="text-gray-700 font-semibold mb-2 block">Place of Birth</Label>
-                <input type="text" name="placeOfBirth" value={userInfo.placeOfBirth} onChange={handleUserInputChange} className={inputClass} placeholder="e.g. New York" />
+                <input
+                  type="text"
+                  name="placeOfBirth"
+                  value={userInfo.placeOfBirth}
+                  onChange={handleUserInputChange}
+                  className={inputClass}
+                  placeholder="e.g. New York"
+                />
               </div>
               <div>
                 <Label className="text-gray-700 font-semibold mb-2 block">Date of Birth</Label>
-                <input type="date" name="dateOfBirth" value={userInfo.dateOfBirth} onChange={handleUserInputChange} className={inputClass} />
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={userInfo.dateOfBirth}
+                  onChange={handleUserInputChange}
+                  className={inputClass}
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <Label className="text-gray-700 font-semibold mb-2 block">Phone Number</Label>
-                <input type="tel" name="phone" value={userInfo.phone} onChange={handleUserInputChange} className={inputClass} placeholder="e.g. +1 234 567 890" />
+                <input
+                  type="tel"
+                  name="phone"
+                  value={userInfo.phone}
+                  onChange={handleUserInputChange}
+                  className={inputClass}
+                  placeholder="e.g. +1 234 567 890"
+                />
               </div>
               <div>
                 <Label className="text-gray-700 font-semibold mb-2 block">Email Address</Label>
-                <input type="email" name="email" value={userInfo.email} onChange={handleUserInputChange} className={inputClass} placeholder="e.g. john@example.com" />
+                <input
+                  type="email"
+                  name="email"
+                  value={userInfo.email}
+                  onChange={handleUserInputChange}
+                  className={inputClass}
+                  placeholder="e.g. john@example.com"
+                />
               </div>
             </div>
 
             <div>
               <Label className="text-gray-700 font-semibold mb-2 block">Address</Label>
-              <textarea name="address" value={userInfo.address} onChange={handleUserInputChange} rows={3} className={`${inputClass} h-auto resize-none`} placeholder="Your full address..." />
+              <textarea
+                name="address"
+                value={userInfo.address}
+                onChange={handleUserInputChange}
+                rows={3}
+                className={`${inputClass} h-auto resize-none`}
+                placeholder="Your full address..."
+              />
             </div>
 
             <div className="pt-6">
-              <Button onClick={startAssessment} className="w-full py-6 text-lg font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg transition">
+              <Button
+                onClick={startAssessment}
+                className="w-full py-6 text-lg font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg transition"
+              >
                 Start Assessment
               </Button>
             </div>
@@ -430,7 +489,6 @@ export default function ErgonomicPage() {
           </CardHeader>
 
           <CardContent className="space-y-8">
-            
             {/* DATA PENGGUNA YANG DITAMPILKAN */}
             <div className="bg-white p-6 rounded-2xl border shadow-sm">
               <h3 className="text-xl font-bold mb-4 text-gray-800 border-b pb-3">User Profile</h3>
@@ -494,16 +552,19 @@ export default function ErgonomicPage() {
                     if (s.type === "body") {
                       const body = val as BodyScore;
                       const isBilat = "isBilateral" in s && s.isBilateral;
-                      const activeMdl = isBilat ? Math.max(body.mdlLeft, body.mdlRight) : body.mdl;
+                      // Ubah Math.max menjadi penjumlahan (+)
+                      const activeMdl = isBilat ? body.mdlLeft + body.mdlRight : body.mdl;
                       const total = body.posture + body.repetition + activeMdl;
-                      
+
                       return (
                         <tr key={s.key}>
                           <td className="p-4">{s.title}</td>
                           <td className="p-4 text-center">{body.posture + body.repetition}</td>
                           <td className="p-4 text-center text-sm">
                             {isBilat ? (
-                              <span className="text-gray-600 font-medium">L: {body.mdlLeft} | R: {body.mdlRight}</span>
+                              <span className="text-gray-600 font-medium">
+                                L: {body.mdlLeft} | R: {body.mdlRight}
+                              </span>
                             ) : (
                               body.mdl
                             )}
@@ -527,7 +588,7 @@ export default function ErgonomicPage() {
             </div>
 
             <div className="rounded-xl border shadow overflow-hidden">
-           <table className="min-w-full">
+              <table className="min-w-full">
                 <thead className="bg-gray-800 text-white">
                   <tr>
                     <th className="p-4 text-left">Risk Level</th>
@@ -537,11 +598,41 @@ export default function ErgonomicPage() {
                 </thead>
                 <tbody>
                   {[
-                    { level: "Negligible Risk", range: "0 - 14", action: "No action required", bg: "#4CAF50", text: "#FFFFFF" },
-                    { level: "Low Risk", range: "15 - 40", action: "Change may be required", bg: "#FFFF00", text: "#000000" },
-                    { level: "Medium Risk", range: "41 - 67", action: "Vigilance, improvements to consider", bg: "#FF9800", text: "#000000" },
-                    { level: "High Risk", range: "68 - 93", action: "Improvements needed", bg: "#FFB74D", text: "#000000" },
-                    { level: "Very High Risk", range: "94 - 108", action: "Immediate changes", bg: "#FF0000", text: "#FFFFFF" },
+                    {
+                      level: "Negligible Risk",
+                      range: "0 - 14",
+                      action: "No action required",
+                      bg: "#4CAF50",
+                      text: "#FFFFFF",
+                    },
+                    {
+                      level: "Low Risk",
+                      range: "15 - 40",
+                      action: "Change may be required",
+                      bg: "#FFFF00",
+                      text: "#000000",
+                    },
+                    {
+                      level: "Medium Risk",
+                      range: "41 - 67",
+                      action: "Vigilance, improvements to consider",
+                      bg: "#FF9800",
+                      text: "#000000",
+                    },
+                    {
+                      level: "High Risk",
+                      range: "68 - 93",
+                      action: "Improvements needed",
+                      bg: "#FFB74D",
+                      text: "#000000",
+                    },
+                    {
+                      level: "Very High Risk",
+                      range: "94 - 108",
+                      action: "Immediate changes",
+                      bg: "#FF0000",
+                      text: "#FFFFFF",
+                    },
                   ].map((r) => {
                     const isActive = r.level === riskLevel;
 
@@ -566,7 +657,11 @@ export default function ErgonomicPage() {
             </div>
 
             <div className="flex justify-center mt-6">
-              <Button variant="outline" className="px-8 py-3 text-lg font-medium text-gray-700 hover:bg-gray-200 rounded-xl" onClick={restart}>
+              <Button
+                variant="outline"
+                className="px-8 py-3 text-lg font-medium text-gray-700 hover:bg-gray-200 rounded-xl"
+                onClick={restart}
+              >
                 Restart Assessment
               </Button>
             </div>
@@ -593,9 +688,16 @@ export default function ErgonomicPage() {
                 {/* POSTURE */}
                 <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
                   <h3 className="text-lg font-semibold mb-4 text-gray-700">Posture</h3>
-                  <RadioGroup value={String((scores[current.key] as BodyScore).posture)} onValueChange={(v) => updateBody("posture", Number(v))} className="flex flex-col gap-2">
+                  <RadioGroup
+                    value={String((scores[current.key] as BodyScore).posture)}
+                    onValueChange={(v) => updateBody("posture", Number(v))}
+                    className="flex flex-col gap-2"
+                  >
                     {postureOptions[current.key].map((item) => (
-                      <Label key={item.value} className="flex items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                      <Label
+                        key={item.value}
+                        className="flex items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                      >
                         <RadioGroupItem value={String(item.value)} className="mr-3" />
                         <div>
                           <Image src={item.img} alt="" width={400} height={200} className="mr-3 rounded" />
@@ -614,9 +716,16 @@ export default function ErgonomicPage() {
                   {/* Repetition */}
                   <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
                     <h3 className="text-lg font-semibold mb-4 text-gray-700">Repetition</h3>
-                    <RadioGroup value={String((scores[current.key] as BodyScore).repetition)} onValueChange={(v) => updateBody("repetition", Number(v))} className="flex flex-col gap-2">
+                    <RadioGroup
+                      value={String((scores[current.key] as BodyScore).repetition)}
+                      onValueChange={(v) => updateBody("repetition", Number(v))}
+                      className="flex flex-col gap-2"
+                    >
                       {repetitionOptions[current.key].map((item) => (
-                        <Label key={item.value} className="flex items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                        <Label
+                          key={item.value}
+                          className="flex items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                        >
                           <RadioGroupItem value={String(item.value)} className="mr-3" />
                           <div>
                             <p className="font-medium">{item.label}</p>
@@ -632,9 +741,16 @@ export default function ErgonomicPage() {
                     <div className="grid grid-cols-2 gap-4 border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
                       <div>
                         <h3 className="text-sm font-semibold mb-3 text-gray-700 border-b pb-2">MDL - Left</h3>
-                        <RadioGroup value={String((scores[current.key] as BodyScore).mdlLeft)} onValueChange={(v) => updateBody("mdlLeft", Number(v))} className="flex flex-col gap-2">
+                        <RadioGroup
+                          value={String((scores[current.key] as BodyScore).mdlLeft)}
+                          onValueChange={(v) => updateBody("mdlLeft", Number(v))}
+                          className="flex flex-col gap-2"
+                        >
                           {mdlOptions.map((m) => (
-                            <Label key={`left-${m.value}`} className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                            <Label
+                              key={`left-${m.value}`}
+                              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                            >
                               <RadioGroupItem value={String(m.value)} />
                               <span className="text-lg">{m.icon}</span>
                               <span className={`px-2 py-1 rounded text-white text-xs ${m.color}`}>{m.label}</span>
@@ -644,9 +760,16 @@ export default function ErgonomicPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold mb-3 text-gray-700 border-b pb-2">MDL - Right</h3>
-                        <RadioGroup value={String((scores[current.key] as BodyScore).mdlRight)} onValueChange={(v) => updateBody("mdlRight", Number(v))} className="flex flex-col gap-2">
+                        <RadioGroup
+                          value={String((scores[current.key] as BodyScore).mdlRight)}
+                          onValueChange={(v) => updateBody("mdlRight", Number(v))}
+                          className="flex flex-col gap-2"
+                        >
                           {mdlOptions.map((m) => (
-                            <Label key={`right-${m.value}`} className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                            <Label
+                              key={`right-${m.value}`}
+                              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                            >
                               <RadioGroupItem value={String(m.value)} />
                               <span className="text-lg">{m.icon}</span>
                               <span className={`px-2 py-1 rounded text-white text-xs ${m.color}`}>{m.label}</span>
@@ -658,9 +781,16 @@ export default function ErgonomicPage() {
                   ) : (
                     <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
                       <h3 className="text-lg font-semibold mb-4 text-gray-700">MDL</h3>
-                      <RadioGroup value={String((scores[current.key] as BodyScore).mdl)} onValueChange={(v) => updateBody("mdl", Number(v))} className="flex flex-col gap-2">
+                      <RadioGroup
+                        value={String((scores[current.key] as BodyScore).mdl)}
+                        onValueChange={(v) => updateBody("mdl", Number(v))}
+                        className="flex flex-col gap-2"
+                      >
                         {mdlOptions.map((m) => (
-                          <Label key={m.value} className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+                          <Label
+                            key={m.value}
+                            className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                          >
                             <RadioGroupItem value={String(m.value)} />
                             <span className="text-xl">{m.icon}</span>
                             <span className={`px-2 py-1 rounded text-white text-sm ${m.color}`}>{m.label}</span>
@@ -674,23 +804,57 @@ export default function ErgonomicPage() {
             ) : current.key === "load" ? (
               <div className="border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <h3 className="text-lg font-semibold mb-4 text-gray-700 border-b pb-2">1. Select Gender</h3>
-                <RadioGroup value={activeGender} onValueChange={(gender) => updateTask(gender === "Male" ? 0 : 3)} className="flex gap-4 mb-8">
-                  <Label className={`flex-1 flex items-center justify-center p-4 rounded-xl cursor-pointer border-2 transition ${activeGender === "Male" ? "bg-blue-50 border-blue-500 shadow-md" : "border-gray-200 hover:bg-gray-50"}`}>
+                <RadioGroup
+                  value={activeGender}
+                  onValueChange={(gender) => updateTask(gender === "Male" ? 0 : 3)}
+                  className="flex gap-4 mb-8"
+                >
+                  <Label
+                    className={`flex-1 flex items-center justify-center p-4 rounded-xl cursor-pointer border-2 transition ${activeGender === "Male" ? "bg-blue-50 border-blue-500 shadow-md" : "border-gray-200 hover:bg-gray-50"}`}
+                  >
                     <RadioGroupItem value="Male" className="hidden" />
                     <span className="text-3xl mr-3">👨</span>
-                    <span className={`text-lg font-bold ${activeGender === "Male" ? "text-blue-700" : "text-gray-500"}`}>Male</span>
+                    <span
+                      className={`text-lg font-bold ${activeGender === "Male" ? "text-blue-700" : "text-gray-500"}`}
+                    >
+                      Male
+                    </span>
                   </Label>
-                  <Label className={`flex-1 flex items-center justify-center p-4 rounded-xl cursor-pointer border-2 transition ${activeGender === "Female" ? "bg-pink-50 border-pink-500 shadow-md" : "border-gray-200 hover:bg-gray-50"}`}>
+                  <Label
+                    className={`flex-1 flex items-center justify-center p-4 rounded-xl cursor-pointer border-2 transition ${activeGender === "Female" ? "bg-pink-50 border-pink-500 shadow-md" : "border-gray-200 hover:bg-gray-50"}`}
+                  >
                     <RadioGroupItem value="Female" className="hidden" />
                     <span className="text-3xl mr-3">👩</span>
-                    <span className={`text-lg font-bold ${activeGender === "Female" ? "text-pink-700" : "text-gray-500"}`}>Female</span>
+                    <span
+                      className={`text-lg font-bold ${activeGender === "Female" ? "text-pink-700" : "text-gray-500"}`}
+                    >
+                      Female
+                    </span>
                   </Label>
                 </RadioGroup>
 
                 <h3 className="text-lg font-semibold mb-4 text-gray-700 border-b pb-2">2. Select Load Weight</h3>
-                <RadioGroup value={String(loadValue)} onValueChange={(v) => updateTask(Number(v))} className="flex flex-col gap-3">
-                  {(activeGender === "Male" ? [{ label: "< 5 kg", val: 0 }, { label: "5 - 15 kg", val: 1 }, { label: "> 15 kg", val: 2 }] : [{ label: "< 3 Kg", val: 0 }, { label: "3 - 10 Kg", val: 0 }, { label: "> 10 Kg", val: 2 }]).map((opt) => (
-                    <Label key={opt.val} className="flex items-center p-4 rounded-xl cursor-pointer hover:bg-gray-100 transition border">
+                <RadioGroup
+                  value={String(loadValue)}
+                  onValueChange={(v) => updateTask(Number(v))}
+                  className="flex flex-col gap-3"
+                >
+                  {(activeGender === "Male"
+                    ? [
+                        { label: "< 5 kg", val: 0 },
+                        { label: "5 - 15 kg", val: 1 },
+                        { label: "> 15 kg", val: 2 },
+                      ]
+                    : [
+                        { label: "< 3 Kg", val: 0 },
+                        { label: "3 - 10 Kg", val: 0 },
+                        { label: "> 10 Kg", val: 2 },
+                      ]
+                  ).map((opt) => (
+                    <Label
+                      key={opt.val}
+                      className="flex items-center p-4 rounded-xl cursor-pointer hover:bg-gray-100 transition border"
+                    >
                       <RadioGroupItem value={String(opt.val)} className="mr-4" />
                       <span className="font-medium text-gray-700 text-lg">{opt.label}</span>
                     </Label>
@@ -700,9 +864,16 @@ export default function ErgonomicPage() {
             ) : (
               <div className="border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <h3 className="text-lg font-semibold mb-4 text-gray-700">Select Option</h3>
-                <RadioGroup value={String((scores[current.key] as TaskScore).value)} onValueChange={(v) => updateTask(Number(v))} className="flex flex-col gap-3">
+                <RadioGroup
+                  value={String((scores[current.key] as TaskScore).value)}
+                  onValueChange={(v) => updateTask(Number(v))}
+                  className="flex flex-col gap-3"
+                >
                   {taskOptionsMap[current.key as keyof typeof taskOptionsMap].map((t, i) => (
-                    <Label key={i} className="flex items-center p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition border">
+                    <Label
+                      key={i}
+                      className="flex items-center p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition border"
+                    >
                       <RadioGroupItem value={String(i)} className="mr-4" />
                       {t.icon && <span className="text-2xl mr-3">{t.icon}</span>}
                       {t.img && <Image src={t.img} alt="icon" width={32} height={32} className="mr-3 rounded-md" />}
@@ -724,7 +895,6 @@ export default function ErgonomicPage() {
           </div>
         </Card>
       )}
-
     </div>
   );
 }
