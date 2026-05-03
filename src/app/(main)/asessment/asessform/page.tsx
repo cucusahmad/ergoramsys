@@ -151,11 +151,6 @@ const repetitionOptions: Record<string, { value: number; label: string; desc?: s
     { value: 1, label: "11–20 reps/min", desc: "11–20 repetitions per minute" },
     { value: 2, label: ">20 reps/min", desc: "More than 20 repetitions per minute" },
   ],
-  handGrip: [
-    { value: 0, label: "Rare Grip" },
-    { value: 2, label: "Repeated Grip" },
-    { value: 4, label: "Constant Grip" },
-  ],
 };
 
 /* ================= TASK OPTIONS ================= */
@@ -713,28 +708,30 @@ export default function ErgonomicPage() {
 
                 {/* REPETITION & MDL */}
                 <div className="space-y-4">
-                  {/* Repetition */}
-                  <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-700">Repetition</h3>
-                    <RadioGroup
-                      value={String((scores[current.key] as BodyScore).repetition)}
-                      onValueChange={(v) => updateBody("repetition", Number(v))}
-                      className="flex flex-col gap-2"
-                    >
-                      {repetitionOptions[current.key].map((item) => (
-                        <Label
-                          key={item.value}
-                          className="flex items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
-                        >
-                          <RadioGroupItem value={String(item.value)} className="mr-3" />
-                          <div>
-                            <p className="font-medium">{item.label}</p>
-                            {item.desc && <p className="text-sm text-gray-500">{item.desc}</p>}
-                          </div>
-                        </Label>
-                      ))}
-                    </RadioGroup>
-                  </div>
+                  {/* Repetition (Hanya dirender jika opsinya tersedia) */}
+                  {repetitionOptions[current.key] && (
+                    <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
+                      <h3 className="text-lg font-semibold mb-4 text-gray-700">Repetition</h3>
+                      <RadioGroup
+                        value={String((scores[current.key] as BodyScore).repetition)}
+                        onValueChange={(v) => updateBody("repetition", Number(v))}
+                        className="flex flex-col gap-2"
+                      >
+                        {repetitionOptions[current.key].map((item) => (
+                          <Label
+                            key={item.value}
+                            className="flex items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                          >
+                            <RadioGroupItem value={String(item.value)} className="mr-3" />
+                            <div>
+                              <p className="font-medium">{item.label}</p>
+                              {item.desc && <p className="text-sm text-gray-500">{item.desc}</p>}
+                            </div>
+                          </Label>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  )}
 
                   {/* MDL */}
                   {"isBilateral" in current && current.isBilateral ? (
