@@ -50,16 +50,6 @@ export const sidebarItems2: NavGroup[] = [
     label: "Dashboard",
     items: [
       {
-        title: "Dashboard",
-        url: "/asessment/default",
-        icon: LayoutDashboard,
-      },
-      {
-        title: "Participant",
-        url: "/asessment/crm",
-        icon: ChartBar,
-      },
-      {
         title: "Form Asessment",
         url: "/asessment/asessform",
         icon: Banknote,
