@@ -28,7 +28,7 @@ export default function HeroSection() {
           <div className="flex items-center gap-3">
             <Image
               src="/images/logobaru.png"
-              alt="ERGORAMMSys Logo"
+              alt="ErgoRAMMSys Logo"
               width={200}
               height={40}
               className="object-contain"
@@ -44,12 +44,12 @@ export default function HeroSection() {
           <h1 className="font-extrabold text-4xl leading-tight md:text-5xl">
             Improve Workplace Safety with
             <span className="block bg-gradient-to-r from-sky-500 to-indigo-400 bg-clip-text text-transparent">
-              ERGORAMMSys
+              ErgoRAMMSys
             </span>
           </h1>
 
           <p className="max-w-xl text-lg text-slate-500">
-            Manual Material Handling Tasks – Ergonomic Risk Assessment System (ERGORAMMSys) is a modern platform
+            Manual Material Handling Tasks – Ergonomic Risk Assessment System (ErgoRAMMSys) is a modern platform
             designed to assess and minimize ergonomic risks in manual handling activities.
           </p>
 
