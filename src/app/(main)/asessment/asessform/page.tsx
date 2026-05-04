@@ -235,7 +235,7 @@ const GaugeChart = ({ score }: { score: number }) => {
 
       <div className="-mt-20 text-center">
         <p className="text-gray-500 text-sm">Risk Score</p>
-        <h2 className="text-3xl font-bold">{score}</h2>
+        <h2 className="font-bold text-3xl">{score}</h2>
       </div>
     </div>
   );
@@ -247,9 +247,9 @@ export default function ErgonomicPage() {
 
   // Data Biodata Baru
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    observerName: "",
-    observerPosition: "",
-    organization: "",
+    observerName: "Zayyinul Hayati Zen",
+    observerPosition: "Observer",
+    organization: "Company x",
     assessmentDate: "",
     workerName: "",
     workerPosition: "",
@@ -367,52 +367,71 @@ export default function ErgonomicPage() {
   /* ================= UI STYLES ================= */
   const inputClass =
     "flex h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm";
+  const submitAssessment = async () => {
+    try {
+      const response = await fetch("/api/asessment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userInfo, scores, totalScore, riskLevel }),
+      });
+
+      if (response.ok) {
+        alert("Evaluasi berhasil disimpan ke database!");
+        setScreen("result"); // Pindah ke layar hasil setelah sukses
+      } else {
+        alert("Gagal menyimpan data.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan jaringan.");
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 font-sans">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-6 font-sans">
       {/* ================= SCREEN: FORM BIODATA ================= */}
       {screen === "form" && (
-        <Card className="w-full max-w-2xl shadow-xl rounded-3xl p-8 bg-white">
+        <Card className="w-full max-w-2xl rounded-3xl bg-white p-8 shadow-xl">
           <CardHeader className="mb-4">
-            <CardTitle className="text-center text-3xl font-bold text-gray-800">Information Setup</CardTitle>
-            <p className="text-center text-gray-500 mt-2">Please fill in the details before starting the assessment</p>
+            <CardTitle className="text-center font-bold text-3xl text-gray-800">Information Setup</CardTitle>
+            <p className="mt-2 text-center text-gray-500">Please fill in the details before starting the assessment</p>
           </CardHeader>
           <CardContent className="space-y-8">
             {/* A. Observer Information */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-blue-600 border-b pb-2">A. Observer Information</h3>
+              <h3 className="border-b pb-2 font-bold text-blue-600 text-xl">A. Observer Information</h3>
               <div>
-                <Label className="text-gray-700 font-semibold mb-2 block">Observer Name</Label>
+                <Label className="mb-2 block font-semibold text-gray-700">Observer Name</Label>
                 <input
                   type="text"
                   name="observerName"
-                  value={userInfo.observerName}
+                  value="Zayyinul Hayati Zen"
                   onChange={handleUserInputChange}
                   className={inputClass}
-                  placeholder="e.g. John Doe"
+                  disabled
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <div>
-                  <Label className="text-gray-700 font-semibold mb-2 block">Position / Job Title (Observer)</Label>
+                  <Label className="mb-2 block font-semibold text-gray-700">Position / Job Title (Observer)</Label>
                   <input
                     type="text"
                     name="observerPosition"
-                    value={userInfo.observerPosition}
+                    value="Observer"
                     onChange={handleUserInputChange}
                     className={inputClass}
-                    placeholder="e.g. Ergonomist"
+                    disabled
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-700 font-semibold mb-2 block">Organization / Company</Label>
+                  <Label className="mb-2 block font-semibold text-gray-700">Organization / Company</Label>
                   <input
                     type="text"
                     name="organization"
-                    value={userInfo.organization}
+                    value="Company x"
                     onChange={handleUserInputChange}
                     className={inputClass}
-                    placeholder="e.g. Tech Corp"
+                    disabled
                   />
                 </div>
               </div>
@@ -420,9 +439,9 @@ export default function ErgonomicPage() {
 
             {/* B. Assessment Information */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-blue-600 border-b pb-2">B. Assessment Information</h3>
+              <h3 className="border-b pb-2 font-bold text-blue-600 text-xl">B. Assessment Information</h3>
               <div>
-                <Label className="text-gray-700 font-semibold mb-2 block">Assessment Date</Label>
+                <Label className="mb-2 block font-semibold text-gray-700">Assessment Date</Label>
                 <input
                   type="date"
                   name="assessmentDate"
@@ -435,10 +454,10 @@ export default function ErgonomicPage() {
 
             {/* C. Worker Information */}
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-blue-600 border-b pb-2">C. Worker Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <h3 className="border-b pb-2 font-bold text-blue-600 text-xl">C. Worker Information</h3>
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <div>
-                  <Label className="text-gray-700 font-semibold mb-2 block">Worker Name</Label>
+                  <Label className="mb-2 block font-semibold text-gray-700">Worker Name</Label>
                   <input
                     type="text"
                     name="workerName"
@@ -449,7 +468,7 @@ export default function ErgonomicPage() {
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-700 font-semibold mb-2 block">Worker Position / Job Title</Label>
+                  <Label className="mb-2 block font-semibold text-gray-700">Worker Position / Job Title</Label>
                   <input
                     type="text"
                     name="workerPosition"
@@ -460,7 +479,7 @@ export default function ErgonomicPage() {
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-700 font-semibold mb-2 block">Age (years)</Label>
+                  <Label className="mb-2 block font-semibold text-gray-700">Age (years)</Label>
                   <input
                     type="number"
                     name="workerAge"
@@ -472,7 +491,7 @@ export default function ErgonomicPage() {
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-700 font-semibold mb-2 block">Work Experience (years)</Label>
+                  <Label className="mb-2 block font-semibold text-gray-700">Work Experience (years)</Label>
                   <input
                     type="number"
                     name="workerExperience"
@@ -489,7 +508,7 @@ export default function ErgonomicPage() {
             <div className="pt-6">
               <Button
                 onClick={startAssessment}
-                className="w-full py-6 text-lg font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg transition"
+                className="w-full rounded-xl bg-blue-600 py-6 font-bold text-lg text-white shadow-lg transition hover:bg-blue-700"
               >
                 Start Assessment
               </Button>
@@ -500,60 +519,60 @@ export default function ErgonomicPage() {
 
       {/* ================= SCREEN: RESULT ================= */}
       {screen === "result" && (
-        <Card className="w-full max-w-6xl shadow-2xl rounded-3xl p-8 bg-gradient-to-br from-white to-gray-50">
+        <Card className="w-full max-w-6xl rounded-3xl bg-gradient-to-br from-white to-gray-50 p-8 shadow-2xl">
           <CardHeader>
-            <CardTitle className="text-center text-3xl font-bold mb-4 text-blue-600">Final Assessment Report</CardTitle>
+            <CardTitle className="mb-4 text-center font-bold text-3xl text-blue-600">Final Assessment Report</CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-8">
             {/* DATA PENGGUNA YANG DITAMPILKAN */}
-            <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-6">
+            <div className="space-y-6 rounded-2xl border bg-white p-6 shadow-sm">
               <div>
-                <h3 className="text-lg font-bold mb-3 text-gray-800 border-b pb-2">A. Observer Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <h3 className="mb-3 border-b pb-2 font-bold text-gray-800 text-lg">A. Observer Information</h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div className="flex flex-col">
-                    <span className="text-sm text-gray-500 font-medium">Observer Name</span>
-                    <span className="text-md font-semibold text-gray-800">{userInfo.observerName || "-"}</span>
+                    <span className="font-medium text-gray-500 text-sm">Observer Name</span>
+                    <span className="font-semibold text-gray-800 text-md">{userInfo.observerName || "-"}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm text-gray-500 font-medium">Position / Job Title</span>
-                    <span className="text-md font-semibold text-gray-800">{userInfo.observerPosition || "-"}</span>
+                    <span className="font-medium text-gray-500 text-sm">Position / Job Title</span>
+                    <span className="font-semibold text-gray-800 text-md">{userInfo.observerPosition || "-"}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm text-gray-500 font-medium">Organization / Company</span>
-                    <span className="text-md font-semibold text-gray-800">{userInfo.organization || "-"}</span>
+                    <span className="font-medium text-gray-500 text-sm">Organization / Company</span>
+                    <span className="font-semibold text-gray-800 text-md">{userInfo.organization || "-"}</span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold mb-3 text-gray-800 border-b pb-2">B. Assessment Information</h3>
+                <h3 className="mb-3 border-b pb-2 font-bold text-gray-800 text-lg">B. Assessment Information</h3>
                 <div className="flex flex-col">
-                  <span className="text-sm text-gray-500 font-medium">Assessment Date</span>
-                  <span className="text-md font-semibold text-gray-800">{userInfo.assessmentDate || "-"}</span>
+                  <span className="font-medium text-gray-500 text-sm">Assessment Date</span>
+                  <span className="font-semibold text-gray-800 text-md">{userInfo.assessmentDate || "-"}</span>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold mb-3 text-gray-800 border-b pb-2">C. Worker Information</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <h3 className="mb-3 border-b pb-2 font-bold text-gray-800 text-lg">C. Worker Information</h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                   <div className="flex flex-col">
-                    <span className="text-sm text-gray-500 font-medium">Worker Name</span>
-                    <span className="text-md font-semibold text-gray-800">{userInfo.workerName || "-"}</span>
+                    <span className="font-medium text-gray-500 text-sm">Worker Name</span>
+                    <span className="font-semibold text-gray-800 text-md">{userInfo.workerName || "-"}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm text-gray-500 font-medium">Worker Position</span>
-                    <span className="text-md font-semibold text-gray-800">{userInfo.workerPosition || "-"}</span>
+                    <span className="font-medium text-gray-500 text-sm">Worker Position</span>
+                    <span className="font-semibold text-gray-800 text-md">{userInfo.workerPosition || "-"}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm text-gray-500 font-medium">Age</span>
-                    <span className="text-md font-semibold text-gray-800">
+                    <span className="font-medium text-gray-500 text-sm">Age</span>
+                    <span className="font-semibold text-gray-800 text-md">
                       {userInfo.workerAge ? `${userInfo.workerAge} years` : "-"}
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm text-gray-500 font-medium">Work Experience</span>
-                    <span className="text-md font-semibold text-gray-800">
+                    <span className="font-medium text-gray-500 text-sm">Work Experience</span>
+                    <span className="font-semibold text-gray-800 text-md">
                       {userInfo.workerExperience ? `${userInfo.workerExperience} years` : "-"}
                     </span>
                   </div>
@@ -565,12 +584,12 @@ export default function ErgonomicPage() {
               <GaugeChart score={totalScore} />
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border shadow flex justify-between items-center">
+            <div className="flex items-center justify-between rounded-2xl border bg-white p-6 shadow">
               <div>
                 <p className="text-gray-500 text-sm">Total Score</p>
-                <h2 className="text-4xl font-bold text-blue-600">{totalScore}</h2>
+                <h2 className="font-bold text-4xl text-blue-600">{totalScore}</h2>
               </div>
-              <span className={`px-5 py-2 rounded-full text-sm font-semibold ${getRiskColor(riskLevel)}`}>
+              <span className={`rounded-full px-5 py-2 font-semibold text-sm ${getRiskColor(riskLevel)}`}>
                 {riskLevel}
               </span>
             </div>
@@ -579,13 +598,13 @@ export default function ErgonomicPage() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-200">
                   <tr>
-                    <th className="p-4 text-left text-sm font-medium text-gray-700">Body Part / Task</th>
-                    <th className="p-4 text-left text-sm font-medium text-gray-700">Posture + Rep</th>
-                    <th className="p-4 text-left text-sm font-medium text-gray-700">MDL</th>
-                    <th className="p-4 text-left text-sm font-medium text-gray-700">Total Score</th>
+                    <th className="p-4 text-left font-medium text-gray-700 text-sm">Body Part / Task</th>
+                    <th className="p-4 text-left font-medium text-gray-700 text-sm">Posture + Rep</th>
+                    <th className="p-4 text-left font-medium text-gray-700 text-sm">MDL</th>
+                    <th className="p-4 text-left font-medium text-gray-700 text-sm">Total Score</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 bg-white">
                   {steps.map((s) => {
                     const val = scores[s.key];
                     if (s.type === "body") {
@@ -600,7 +619,7 @@ export default function ErgonomicPage() {
                           <td className="p-4 text-center">{body.posture + body.repetition}</td>
                           <td className="p-4 text-center text-sm">
                             {isBilat ? (
-                              <span className="text-gray-600 font-medium">
+                              <span className="font-medium text-gray-600">
                                 L: {body.mdlLeft} | R: {body.mdlRight}
                               </span>
                             ) : (
@@ -625,7 +644,7 @@ export default function ErgonomicPage() {
               </table>
             </div>
 
-            <div className="rounded-xl border shadow overflow-hidden">
+            <div className="overflow-hidden rounded-xl border shadow">
               <table className="min-w-full">
                 <thead className="bg-gray-800 text-white">
                   <tr>
@@ -680,7 +699,7 @@ export default function ErgonomicPage() {
                         style={{ backgroundColor: r.bg, color: r.text }}
                         className={`transition-all duration-300 ${
                           isActive
-                            ? "font-bold scale-[1.02] shadow-lg relative z-10 border-2 border-black"
+                            ? "relative z-10 scale-[1.02] border-2 border-black font-bold shadow-lg"
                             : "opacity-80 hover:opacity-100"
                         }`}
                       >
@@ -694,10 +713,10 @@ export default function ErgonomicPage() {
               </table>
             </div>
 
-            <div className="flex justify-center mt-6">
+            <div className="mt-6 flex justify-center">
               <Button
                 variant="outline"
-                className="px-8 py-3 text-lg font-medium text-gray-700 hover:bg-gray-200 rounded-xl"
+                className="rounded-xl px-8 py-3 font-medium text-gray-700 text-lg hover:bg-gray-200"
                 onClick={restart}
               >
                 Restart Assessment
@@ -709,11 +728,11 @@ export default function ErgonomicPage() {
 
       {/* ================= SCREEN: ASSESSMENT ================= */}
       {screen === "assessment" && (
-        <Card className="w-full max-w-4xl shadow-xl rounded-3xl p-8 bg-white">
+        <Card className="w-full max-w-4xl rounded-3xl bg-white p-8 shadow-xl">
           <CardHeader className="mb-4">
-            <div className="flex justify-between items-center w-full">
-              <CardTitle className="text-2xl font-bold text-gray-800">{current.title}</CardTitle>
-              <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-bold shadow-sm border border-blue-200">
+            <div className="flex w-full items-center justify-between">
+              <CardTitle className="font-bold text-2xl text-gray-800">{current.title}</CardTitle>
+              <div className="rounded-full border border-blue-200 bg-blue-100 px-4 py-2 font-bold text-blue-800 text-sm shadow-sm">
                 Part Score: {getCurrentStepScore()}
               </div>
             </div>
@@ -722,10 +741,10 @@ export default function ErgonomicPage() {
 
           <CardContent className="space-y-6">
             {current.type === "body" ? (
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid gap-8 md:grid-cols-2">
                 {/* POSTURE */}
-                <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <h3 className="text-lg font-semibold mb-4 text-gray-700">Posture</h3>
+                <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                  <h3 className="mb-4 font-semibold text-gray-700 text-lg">Posture</h3>
                   <RadioGroup
                     value={String((scores[current.key] as BodyScore).posture)}
                     onValueChange={(v) => updateBody("posture", Number(v))}
@@ -734,14 +753,14 @@ export default function ErgonomicPage() {
                     {postureOptions[current.key].map((item) => (
                       <Label
                         key={item.value}
-                        className="flex items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                        className="flex cursor-pointer items-center rounded-lg p-2 transition hover:bg-gray-100"
                       >
                         <RadioGroupItem value={String(item.value)} className="mr-3" />
                         <div>
                           <Image src={item.img} alt="" width={400} height={200} className="mr-3 rounded" />
                           <center>
                             <p className="font-medium">{item.label}</p>
-                            <p className="text-sm text-gray-500">{item.desc}</p>
+                            <p className="text-gray-500 text-sm">{item.desc}</p>
                           </center>
                         </div>
                       </Label>
@@ -753,8 +772,8 @@ export default function ErgonomicPage() {
                 <div className="space-y-4">
                   {/* Repetition */}
                   {repetitionOptions[current.key] && (
-                    <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
-                      <h3 className="text-lg font-semibold mb-4 text-gray-700">Repetition</h3>
+                    <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                      <h3 className="mb-4 font-semibold text-gray-700 text-lg">Repetition</h3>
                       <RadioGroup
                         value={String((scores[current.key] as BodyScore).repetition)}
                         onValueChange={(v) => updateBody("repetition", Number(v))}
@@ -763,12 +782,12 @@ export default function ErgonomicPage() {
                         {repetitionOptions[current.key].map((item) => (
                           <Label
                             key={item.value}
-                            className="flex items-center p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                            className="flex cursor-pointer items-center rounded-lg p-2 transition hover:bg-gray-100"
                           >
                             <RadioGroupItem value={String(item.value)} className="mr-3" />
                             <div>
                               <p className="font-medium">{item.label}</p>
-                              {item.desc && <p className="text-sm text-gray-500">{item.desc}</p>}
+                              {item.desc && <p className="text-gray-500 text-sm">{item.desc}</p>}
                             </div>
                           </Label>
                         ))}
@@ -778,9 +797,9 @@ export default function ErgonomicPage() {
 
                   {/* MDL */}
                   {"isBilateral" in current && current.isBilateral ? (
-                    <div className="grid grid-cols-2 gap-4 border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300 bg-white">
+                    <div className="grid grid-cols-2 gap-4 rounded-xl border bg-white p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
                       <div>
-                        <h3 className="text-sm font-semibold mb-3 text-gray-700 border-b pb-2">MDL - Left</h3>
+                        <h3 className="mb-3 border-b pb-2 font-semibold text-gray-700 text-sm">MDL - Left</h3>
                         <RadioGroup
                           value={String((scores[current.key] as BodyScore).mdlLeft)}
                           onValueChange={(v) => updateBody("mdlLeft", Number(v))}
@@ -789,17 +808,17 @@ export default function ErgonomicPage() {
                           {mdlOptions.map((m) => (
                             <Label
                               key={`left-${m.value}`}
-                              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                              className="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition hover:bg-gray-100"
                             >
                               <RadioGroupItem value={String(m.value)} />
                               <span className="text-lg">{m.icon}</span>
-                              <span className={`px-2 py-1 rounded text-white text-xs ${m.color}`}>{m.label}</span>
+                              <span className={`rounded px-2 py-1 text-white text-xs ${m.color}`}>{m.label}</span>
                             </Label>
                           ))}
                         </RadioGroup>
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold mb-3 text-gray-700 border-b pb-2">MDL - Right</h3>
+                        <h3 className="mb-3 border-b pb-2 font-semibold text-gray-700 text-sm">MDL - Right</h3>
                         <RadioGroup
                           value={String((scores[current.key] as BodyScore).mdlRight)}
                           onValueChange={(v) => updateBody("mdlRight", Number(v))}
@@ -808,19 +827,19 @@ export default function ErgonomicPage() {
                           {mdlOptions.map((m) => (
                             <Label
                               key={`right-${m.value}`}
-                              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                              className="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition hover:bg-gray-100"
                             >
                               <RadioGroupItem value={String(m.value)} />
                               <span className="text-lg">{m.icon}</span>
-                              <span className={`px-2 py-1 rounded text-white text-xs ${m.color}`}>{m.label}</span>
+                              <span className={`rounded px-2 py-1 text-white text-xs ${m.color}`}>{m.label}</span>
                             </Label>
                           ))}
                         </RadioGroup>
                       </div>
                     </div>
                   ) : (
-                    <div className="border rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
-                      <h3 className="text-lg font-semibold mb-4 text-gray-700">MDL</h3>
+                    <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                      <h3 className="mb-4 font-semibold text-gray-700 text-lg">MDL</h3>
                       <RadioGroup
                         value={String((scores[current.key] as BodyScore).mdl)}
                         onValueChange={(v) => updateBody("mdl", Number(v))}
@@ -829,11 +848,11 @@ export default function ErgonomicPage() {
                         {mdlOptions.map((m) => (
                           <Label
                             key={m.value}
-                            className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition"
+                            className="flex cursor-pointer items-center gap-3 rounded-lg p-2 transition hover:bg-gray-100"
                           >
                             <RadioGroupItem value={String(m.value)} />
                             <span className="text-xl">{m.icon}</span>
-                            <span className={`px-2 py-1 rounded text-white text-sm ${m.color}`}>{m.label}</span>
+                            <span className={`rounded px-2 py-1 text-sm text-white ${m.color}`}>{m.label}</span>
                           </Label>
                         ))}
                       </RadioGroup>
@@ -842,38 +861,38 @@ export default function ErgonomicPage() {
                 </div>
               </div>
             ) : current.key === "load" ? (
-              <div className="border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <h3 className="text-lg font-semibold mb-4 text-gray-700 border-b pb-2">1. Select Gender</h3>
+              <div className="rounded-xl border p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                <h3 className="mb-4 border-b pb-2 font-semibold text-gray-700 text-lg">1. Select Gender</h3>
                 <RadioGroup
                   value={activeGender}
                   onValueChange={(gender) => updateTask(gender === "Male" ? 0 : 3)}
-                  className="flex gap-4 mb-8"
+                  className="mb-8 flex gap-4"
                 >
                   <Label
-                    className={`flex-1 flex items-center justify-center p-4 rounded-xl cursor-pointer border-2 transition ${activeGender === "Male" ? "bg-blue-50 border-blue-500 shadow-md" : "border-gray-200 hover:bg-gray-50"}`}
+                    className={`flex flex-1 cursor-pointer items-center justify-center rounded-xl border-2 p-4 transition ${activeGender === "Male" ? "border-blue-500 bg-blue-50 shadow-md" : "border-gray-200 hover:bg-gray-50"}`}
                   >
                     <RadioGroupItem value="Male" className="hidden" />
-                    <span className="text-3xl mr-3">👨</span>
+                    <span className="mr-3 text-3xl">👨</span>
                     <span
-                      className={`text-lg font-bold ${activeGender === "Male" ? "text-blue-700" : "text-gray-500"}`}
+                      className={`font-bold text-lg ${activeGender === "Male" ? "text-blue-700" : "text-gray-500"}`}
                     >
                       Male
                     </span>
                   </Label>
                   <Label
-                    className={`flex-1 flex items-center justify-center p-4 rounded-xl cursor-pointer border-2 transition ${activeGender === "Female" ? "bg-pink-50 border-pink-500 shadow-md" : "border-gray-200 hover:bg-gray-50"}`}
+                    className={`flex flex-1 cursor-pointer items-center justify-center rounded-xl border-2 p-4 transition ${activeGender === "Female" ? "border-pink-500 bg-pink-50 shadow-md" : "border-gray-200 hover:bg-gray-50"}`}
                   >
                     <RadioGroupItem value="Female" className="hidden" />
-                    <span className="text-3xl mr-3">👩</span>
+                    <span className="mr-3 text-3xl">👩</span>
                     <span
-                      className={`text-lg font-bold ${activeGender === "Female" ? "text-pink-700" : "text-gray-500"}`}
+                      className={`font-bold text-lg ${activeGender === "Female" ? "text-pink-700" : "text-gray-500"}`}
                     >
                       Female
                     </span>
                   </Label>
                 </RadioGroup>
 
-                <h3 className="text-lg font-semibold mb-4 text-gray-700 border-b pb-2">2. Select Load Weight</h3>
+                <h3 className="mb-4 border-b pb-2 font-semibold text-gray-700 text-lg">2. Select Load Weight</h3>
                 <RadioGroup
                   value={String(loadValue)}
                   onValueChange={(v) => updateTask(Number(v))}
@@ -893,7 +912,7 @@ export default function ErgonomicPage() {
                   ).map((opt) => (
                     <Label
                       key={opt.val}
-                      className="flex items-center p-4 rounded-xl cursor-pointer hover:bg-gray-100 transition border"
+                      className="flex cursor-pointer items-center rounded-xl border p-4 transition hover:bg-gray-100"
                     >
                       <RadioGroupItem value={String(opt.val)} className="mr-4" />
                       <span className="font-medium text-gray-700 text-lg">{opt.label}</span>
@@ -902,8 +921,8 @@ export default function ErgonomicPage() {
                 </RadioGroup>
               </div>
             ) : (
-              <div className="border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <h3 className="text-lg font-semibold mb-4 text-gray-700">Select Option</h3>
+              <div className="rounded-xl border p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                <h3 className="mb-4 font-semibold text-gray-700 text-lg">Select Option</h3>
                 <RadioGroup
                   value={String((scores[current.key] as TaskScore).value)}
                   onValueChange={(v) => updateTask(Number(v))}
@@ -912,10 +931,10 @@ export default function ErgonomicPage() {
                   {taskOptionsMap[current.key as keyof typeof taskOptionsMap].map((t, i) => (
                     <Label
                       key={i}
-                      className="flex items-center p-3 rounded-xl cursor-pointer hover:bg-gray-100 transition border"
+                      className="flex cursor-pointer items-center rounded-xl border p-3 transition hover:bg-gray-100"
                     >
                       <RadioGroupItem value={String(i)} className="mr-4" />
-                      {t.icon && <span className="text-2xl mr-3">{t.icon}</span>}
+                      {t.icon && <span className="mr-3 text-2xl">{t.icon}</span>}
                       {t.img && <Image src={t.img} alt="icon" width={32} height={32} className="mr-3 rounded-md" />}
                       <span className="font-medium text-gray-700 leading-relaxed">{t.label}</span>
                     </Label>
@@ -929,8 +948,12 @@ export default function ErgonomicPage() {
             <Button variant="outline" onClick={prev} className="px-6 py-3 font-semibold hover:bg-gray-100">
               Previous
             </Button>
-            <Button onClick={next} className="px-6 py-3 font-semibold hover:bg-blue-100">
-              {step === steps.length - 1 ? "Finish Assessment" : "Next"}
+
+            <Button
+              onClick={step === steps.length - 1 ? submitAssessment : next}
+              className="px-6 py-3 font-semibold hover:bg-blue-100"
+            >
+              {step === steps.length - 1 ? "Save & Show Result" : "Next"}
             </Button>
           </div>
         </Card>

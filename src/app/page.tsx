@@ -29,10 +29,10 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className="rounded-2xl shadow-sm hover:shadow-md transition bg-white/80 backdrop-blur border border-slate-100">
+                <Card className="rounded-2xl border border-slate-100 bg-white/80 shadow-sm backdrop-blur transition hover:shadow-md">
                   <CardContent className="p-6 text-center">
-                    <p className="text-3xl font-extrabold text-indigo-500">{value}</p>
-                    <p className="mt-2 text-sm text-slate-500">{label}</p>
+                    <p className="font-extrabold text-3xl text-indigo-500">{value}</p>
+                    <p className="mt-2 text-slate-500 text-sm">{label}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -42,12 +42,12 @@ export default function Home() {
       </section>
 
       {/* ================= WHY ================= */}
-      <section className="py-24 bg-white">
+      <section className="bg-white py-24">
         <div className="container mx-auto max-w-5xl px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold">Why ErgoRAMMSYs</h2>
+          <h2 className="font-bold text-3xl md:text-4xl">Why ERGORAMMSys</h2>
 
           <p className="mt-6 text-lg text-slate-500 leading-relaxed">
-            Manual material handling activities often pose serious ergonomic risks. ErgoRAMMSYs helps organizations
+            Manual material handling activities often pose serious ergonomic risks. ERGORAMMSys helps organizations
             identify, assess, and reduce these risks to create safer and more productive workplaces.
           </p>
 
@@ -66,7 +66,7 @@ export default function Home() {
       {/* ================= FEATURES ================= */}
       <section className="py-24">
         <div className="container mx-auto max-w-6xl px-6">
-          <h2 className="text-center text-3xl md:text-4xl font-bold">Core Features</h2>
+          <h2 className="text-center font-bold text-3xl md:text-4xl">Core Features</h2>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2">
             <FeatureCard icon={<MapPin />} title="Task Analysis">
@@ -89,9 +89,9 @@ export default function Home() {
       </section>
 
       {/* ================= WORKFLOW ================= */}
-      <section className="py-24 bg-slate-50">
+      <section className="bg-slate-50 py-24">
         <div className="container mx-auto max-w-6xl px-6">
-          <h2 className="text-center text-3xl md:text-4xl font-bold">How It Works</h2>
+          <h2 className="text-center font-bold text-3xl md:text-4xl">How It Works</h2>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
@@ -108,7 +108,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className="rounded-xl shadow-sm hover:shadow-md transition bg-white border border-slate-100">
+                <Card className="rounded-xl border border-slate-100 bg-white shadow-sm transition hover:shadow-md">
                   <CardHeader>
                     <CardTitle className="text-lg">
                       {i + 1}. {title}
@@ -125,8 +125,8 @@ export default function Home() {
       <section className="py-24 text-center">
         <div className="container mx-auto max-w-3xl px-6">
           <Card className="rounded-2xl bg-gradient-to-r from-indigo-500 to-sky-400 text-white shadow-md">
-            <CardContent className="py-14 px-6">
-              <h2 className="text-3xl md:text-4xl font-bold">Start Improving Workplace Safety</h2>
+            <CardContent className="px-6 py-14">
+              <h2 className="font-bold text-3xl md:text-4xl">Start Improving Workplace Safety</h2>
 
               <p className="mt-6 text-lg text-white/90">
                 Identify risks, improve safety, and optimize productivity with MMH-ERAS.
@@ -141,7 +141,7 @@ export default function Home() {
       </section>
 
       {/* ================= FOOTER ================= */}
-      <footer className="border-t py-6 text-center text-sm text-slate-400">
+      <footer className="border-t py-6 text-center text-slate-400 text-sm">
         © {new Date().getFullYear()} MMH-ERAS
       </footer>
     </div>
@@ -153,11 +153,11 @@ export default function Home() {
 function Feature({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
     <motion.div whileHover={{ y: -6 }}>
-      <Card className="rounded-xl shadow-sm hover:shadow-md transition text-center bg-white border border-slate-100">
+      <Card className="rounded-xl border border-slate-100 bg-white text-center shadow-sm transition hover:shadow-md">
         <CardContent className="p-6">
           <div className="mb-4 flex justify-center text-indigo-500">{icon}</div>
           <h3 className="font-semibold text-lg">{title}</h3>
-          <p className="mt-2 text-sm text-slate-500">{desc}</p>
+          <p className="mt-2 text-slate-500 text-sm">{desc}</p>
         </CardContent>
       </Card>
     </motion.div>
@@ -166,12 +166,12 @@ function Feature({ icon, title, desc }: { icon: React.ReactNode; title: string; 
 
 function FeatureCard({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
-    <Card className="rounded-xl shadow-sm hover:shadow-md transition bg-white border border-slate-100">
+    <Card className="rounded-xl border border-slate-100 bg-white shadow-sm transition hover:shadow-md">
       <CardHeader className="flex flex-row items-center gap-2 text-indigo-500">
         {icon}
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent className="text-sm text-slate-500">{children}</CardContent>
+      <CardContent className="text-slate-500 text-sm">{children}</CardContent>
     </Card>
   );
 }

@@ -1,23 +1,4 @@
-import {
-  Banknote,
-  Calendar,
-  ChartBar,
-  Fingerprint,
-  Forklift,
-  Gauge,
-  GraduationCap,
-  Kanban,
-  LayoutDashboard,
-  ListTodo,
-  Lock,
-  type LucideIcon,
-  Mail,
-  MessageSquare,
-  ReceiptText,
-  ShoppingBag,
-  SquareArrowUpRight,
-  Users,
-} from "lucide-react";
+import { Banknote, Forklift, ListTodo, type LucideIcon } from "lucide-react";
 
 export interface NavSubItem {
   title: string;
@@ -50,9 +31,14 @@ export const sidebarItems2: NavGroup[] = [
     label: "Dashboard",
     items: [
       {
-        title: "Form Asessment",
+        title: "Assessment Form",
         url: "/asessment/asessform",
         icon: Banknote,
+      },
+      {
+        title: "Assessment List",
+        url: "/asessment/list",
+        icon: ListTodo,
       },
       {
         title: "Company",

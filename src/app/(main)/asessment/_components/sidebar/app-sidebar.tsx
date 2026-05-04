@@ -15,7 +15,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { APP_CONFIG } from "@/config/app-config";
 import { rootUser } from "@/data/users";
 import { sidebarItems2 } from "@/navigation/sidebar/sidebar-items2";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
@@ -79,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link prefetch={false} href="/dashboard/default">
+              <Link prefetch={false} href="/asessment">
                 <Command />
                 <Image src="/images/logobaru.png" alt="Logo" width={120} height={40} className="object-contain" />
               </Link>

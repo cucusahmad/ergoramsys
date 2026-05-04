@@ -28,7 +28,7 @@ export default function HeroSection() {
           <div className="flex items-center gap-3">
             <Image
               src="/images/logobaru.png"
-              alt="ErgoRAMMSYs Logo"
+              alt="ERGORAMMSys Logo"
               width={200}
               height={40}
               className="object-contain"
@@ -36,25 +36,25 @@ export default function HeroSection() {
             />
           </div>
 
-          <Badge className="w-fit gap-2 px-4 py-1 text-sm bg-indigo-50 text-indigo-600 border border-indigo-100">
+          <Badge className="w-fit gap-2 border border-indigo-100 bg-indigo-50 px-4 py-1 text-indigo-600 text-sm">
             <School size={16} />
             Ergonomic Risk Assessment System
           </Badge>
 
-          <h1 className="text-4xl font-extrabold leading-tight md:text-5xl">
+          <h1 className="font-extrabold text-4xl leading-tight md:text-5xl">
             Improve Workplace Safety with
             <span className="block bg-gradient-to-r from-sky-500 to-indigo-400 bg-clip-text text-transparent">
-              ErgoRAMMSYs
+              ERGORAMMSys
             </span>
           </h1>
 
           <p className="max-w-xl text-lg text-slate-500">
-            Manual Material Handling Tasks – Ergonomic Risk Assessment System (ErgoRAMMSYs) is a modern platform
+            Manual Material Handling Tasks – Ergonomic Risk Assessment System (ERGORAMMSys) is a modern platform
             designed to assess and minimize ergonomic risks in manual handling activities.
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Button asChild size="lg" className="px-8 py-6 rounded-xl bg-indigo-500 hover:bg-indigo-600 shadow-sm">
+            <Button asChild size="lg" className="rounded-xl bg-indigo-500 px-8 py-6 shadow-sm hover:bg-indigo-600">
               <a href="/auth/login">Get Started</a>
             </Button>
 
@@ -62,7 +62,7 @@ export default function HeroSection() {
               asChild
               variant="outline"
               size="lg"
-              className="px-8 py-6 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50"
+              className="rounded-xl border-slate-200 px-8 py-6 text-slate-600 hover:bg-slate-50"
             >
               <a href="#features">Learn More</a>
             </Button>
@@ -87,11 +87,11 @@ export default function HeroSection() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
-            className="absolute h-[420px] w-[420px] rounded-full border border-dashed border-indigo-200"
+            className="absolute h-[420px] w-[420px] rounded-full border border-indigo-200 border-dashed"
           />
 
           {/* IMAGE CARD */}
-          <Card className="relative rounded-full p-3 shadow-md bg-white/70 backdrop-blur">
+          <Card className="relative rounded-full bg-white/70 p-3 shadow-md backdrop-blur">
             <div className="relative h-[360px] w-[360px] overflow-hidden rounded-full">
               <Image src="/images/HeroSection.png" alt="MMH-ERAS System" fill priority className="object-cover" />
             </div>
@@ -100,7 +100,7 @@ export default function HeroSection() {
           {/* FLOATING INFO */}
           <Floating label="⚠️ Risk Identification" className="-top-4 -left-14" />
           <Floating label="📊 Reports" className="top-1/2 -right-16" />
-          <Floating label="✅ Safety" className="-bottom-4 right-2" />
+          <Floating label="✅ Safety" className="right-2 -bottom-4" />
         </motion.div>
       </div>
     </section>
@@ -115,7 +115,7 @@ function Floating({ label, className }: { label: string; className: string }) {
       transition={{ repeat: Infinity, duration: 3 }}
       className={`absolute ${className}`}
     >
-      <Card className="px-4 py-2 text-sm font-medium shadow-sm bg-white/80 backdrop-blur border border-slate-100">
+      <Card className="border border-slate-100 bg-white/80 px-4 py-2 font-medium text-sm shadow-sm backdrop-blur">
         {label}
       </Card>
     </motion.div>
