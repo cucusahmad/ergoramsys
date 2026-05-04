@@ -44,10 +44,10 @@ export default function Home() {
       {/* ================= WHY ================= */}
       <section className="bg-white py-24">
         <div className="container mx-auto max-w-5xl px-6 text-center">
-          <h2 className="font-bold text-3xl md:text-4xl">Why ERGORAMMSys</h2>
+          <h2 className="font-bold text-3xl md:text-4xl">Why ErgoRAMMSys</h2>
 
           <p className="mt-6 text-lg text-slate-500 leading-relaxed">
-            Manual material handling activities often pose serious ergonomic risks. ERGORAMMSys helps organizations
+            Manual material handling activities often pose serious ergonomic risks. ErgoRAMMSys helps organizations
             identify, assess, and reduce these risks to create safer and more productive workplaces.
           </p>
 
