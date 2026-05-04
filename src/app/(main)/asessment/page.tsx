@@ -39,7 +39,7 @@ export default function AssessmentIntroPage() {
             <ShieldAlert className="h-8 w-8 text-blue-700" />
           </div>
           <h1 className="font-extrabold text-4xl text-slate-900 tracking-tight">
-            Welcome to <span className="text-blue-700">ERGORAMMSys</span>
+            Welcome to <span className="text-blue-700">ErgoRAMMSys</span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-slate-600">
             Ergonomic Risk Assessment for Manual Material Handling System. This tool is designed to help you

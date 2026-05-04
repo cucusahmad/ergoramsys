@@ -86,7 +86,7 @@ export default function LoginV1() {
           </div>
 
           <h1 className="mb-3 font-extrabold text-4xl text-blue-700 tracking-tight drop-shadow-md sm:text-5xl">
-            ERGORAMMSys
+            ErgoRAMMSys
           </h1>
           <p className="mx-auto max-w-sm rounded-full border border-white/20 bg-[#164d98]/60 px-4 py-1.5 font-semibold text-[#f6bc1b] text-sm leading-relaxed drop-shadow-sm backdrop-blur-md sm:text-base">
             Ergonomic Risk Assessment for Manual Material Handling System
