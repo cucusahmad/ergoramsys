@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import Image from "next/image";
 
+import { createClient } from "@supabase/supabase-js"; // 👉 Tambahkan ini
 import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
 
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { createClient } from "@supabase/supabase-js"; // 👉 Tambahkan ini
 
 /* ================= TYPES ================= */
 
@@ -385,24 +385,22 @@ export default function ErgonomicPage() {
   /* ================= UI STYLES ================= */
   const inputClass =
     "flex h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm";
-const submitAssessment = async () => {
+  const submitAssessment = async () => {
     setIsUploading(true);
     try {
       // 1. Upload semua gambar ke Supabase dulu
-      let uploadedImageUrls: Record<string, string> = {};
+      const uploadedImageUrls: Record<string, string> = {};
 
       for (const stepKey in images) {
         const file = images[stepKey];
         if (file) {
-          const fileName = `${Date.now()}-${stepKey}-${file.name.replace(/\s+/g, '-')}`;
+          const fileName = `${Date.now()}-${stepKey}-${file.name.replace(/\s+/g, "-")}`;
           const { data, error } = await supabase.storage
             .from("assessment_images") // Pastikan nama bucket ini benar
             .upload(fileName, file);
 
           if (!error) {
-            const { data: publicUrlData } = supabase.storage
-              .from("assessment_images")
-              .getPublicUrl(fileName);
+            const { data: publicUrlData } = supabase.storage.from("assessment_images").getPublicUrl(fileName);
             uploadedImageUrls[stepKey] = publicUrlData.publicUrl;
           }
         }
@@ -789,14 +787,15 @@ const submitAssessment = async () => {
             <Progress value={((step + 1) / steps.length) * 100} className="mt-4" />
           </CardHeader>
 
-        <CardContent className="space-y-6">
+          <CardContent className="space-y-6">
             {current.type === "body" ? (
-              <div className="space-y-6"> {/* 👉 Bungkus dengan div space-y-6 ini */}
-                
+              <div className="space-y-6">
+                {" "}
+                {/* 👉 Bungkus dengan div space-y-6 ini */}
                 {/* 👉 UI UPLOAD GAMBAR MULAI DI SINI */}
                 <div className="rounded-xl border border-blue-100 bg-blue-50/40 p-5 shadow-sm">
                   <h3 className="mb-3 font-semibold text-blue-800 text-lg">
-                    Upload Foto Postur {current.title} (Opsional)
+                    Upload Posture {current.title} Photo (Opsional)
                   </h3>
                   <input
                     type="file"
@@ -817,127 +816,126 @@ const submitAssessment = async () => {
                   )}
                 </div>
                 {/* 👉 UI UPLOAD GAMBAR SELESAI */}
-
                 <div className="grid gap-8 md:grid-cols-2">
                   {/* POSTURE */}
                   <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
                     {/* ... (kode posture yang lama biarkan saja) ... */}
-                  <h3 className="mb-4 font-semibold text-gray-700 text-lg">Posture</h3>
-                  <RadioGroup
-                    value={String((scores[current.key] as BodyScore).posture)}
-                    onValueChange={(v) => updateBody("posture", Number(v))}
-                    className="flex flex-col gap-2"
-                  >
-                    {postureOptions[current.key].map((item) => (
-                      <Label
-                        key={item.value}
-                        className="flex cursor-pointer items-center rounded-lg p-2 transition hover:bg-gray-100"
-                      >
-                        <RadioGroupItem value={String(item.value)} className="mr-3" />
-                        <div>
-                          <Image src={item.img} alt="" width={400} height={200} className="mr-3 rounded" />
-                          <center>
-                            <p className="font-medium">{item.label}</p>
-                            <p className="text-gray-500 text-sm">{item.desc}</p>
-                          </center>
-                        </div>
-                      </Label>
-                    ))}
-                  </RadioGroup>
-                </div>
-
-                {/* REPETITION & MDL */}
-                <div className="space-y-4">
-                  {/* Repetition */}
-                  {repetitionOptions[current.key] && (
-                    <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
-                      <h3 className="mb-4 font-semibold text-gray-700 text-lg">Repetition</h3>
-                      <RadioGroup
-                        value={String((scores[current.key] as BodyScore).repetition)}
-                        onValueChange={(v) => updateBody("repetition", Number(v))}
-                        className="flex flex-col gap-2"
-                      >
-                        {repetitionOptions[current.key].map((item) => (
-                          <Label
-                            key={item.value}
-                            className="flex cursor-pointer items-center rounded-lg p-2 transition hover:bg-gray-100"
-                          >
-                            <RadioGroupItem value={String(item.value)} className="mr-3" />
-                            <div>
+                    <h3 className="mb-4 font-semibold text-gray-700 text-lg">Posture</h3>
+                    <RadioGroup
+                      value={String((scores[current.key] as BodyScore).posture)}
+                      onValueChange={(v) => updateBody("posture", Number(v))}
+                      className="flex flex-col gap-2"
+                    >
+                      {postureOptions[current.key].map((item) => (
+                        <Label
+                          key={item.value}
+                          className="flex cursor-pointer items-center rounded-lg p-2 transition hover:bg-gray-100"
+                        >
+                          <RadioGroupItem value={String(item.value)} className="mr-3" />
+                          <div>
+                            <Image src={item.img} alt="" width={400} height={200} className="mr-3 rounded" />
+                            <center>
                               <p className="font-medium">{item.label}</p>
-                              {item.desc && <p className="text-gray-500 text-sm">{item.desc}</p>}
-                            </div>
-                          </Label>
-                        ))}
-                      </RadioGroup>
-                    </div>
-                  )}
+                              <p className="text-gray-500 text-sm">{item.desc}</p>
+                            </center>
+                          </div>
+                        </Label>
+                      ))}
+                    </RadioGroup>
+                  </div>
 
-                  {/* MDL */}
-                  {"isBilateral" in current && current.isBilateral ? (
-                    <div className="grid grid-cols-2 gap-4 rounded-xl border bg-white p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
-                      <div>
-                        <h3 className="mb-3 border-b pb-2 font-semibold text-gray-700 text-sm">MDL - Left</h3>
+                  {/* REPETITION & MDL */}
+                  <div className="space-y-4">
+                    {/* Repetition */}
+                    {repetitionOptions[current.key] && (
+                      <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                        <h3 className="mb-4 font-semibold text-gray-700 text-lg">Repetition</h3>
                         <RadioGroup
-                          value={String((scores[current.key] as BodyScore).mdlLeft)}
-                          onValueChange={(v) => updateBody("mdlLeft", Number(v))}
+                          value={String((scores[current.key] as BodyScore).repetition)}
+                          onValueChange={(v) => updateBody("repetition", Number(v))}
                           className="flex flex-col gap-2"
                         >
-                          {mdlOptions.map((m) => (
+                          {repetitionOptions[current.key].map((item) => (
                             <Label
-                              key={`left-${m.value}`}
-                              className="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition hover:bg-gray-100"
+                              key={item.value}
+                              className="flex cursor-pointer items-center rounded-lg p-2 transition hover:bg-gray-100"
                             >
-                              <RadioGroupItem value={String(m.value)} />
-                              <span className="text-lg">{m.icon}</span>
-                              <span className={`rounded px-2 py-1 text-white text-xs ${m.color}`}>{m.label}</span>
+                              <RadioGroupItem value={String(item.value)} className="mr-3" />
+                              <div>
+                                <p className="font-medium">{item.label}</p>
+                                {item.desc && <p className="text-gray-500 text-sm">{item.desc}</p>}
+                              </div>
                             </Label>
                           ))}
                         </RadioGroup>
                       </div>
-                      <div>
-                        <h3 className="mb-3 border-b pb-2 font-semibold text-gray-700 text-sm">MDL - Right</h3>
-                        <RadioGroup
-                          value={String((scores[current.key] as BodyScore).mdlRight)}
-                          onValueChange={(v) => updateBody("mdlRight", Number(v))}
-                          className="flex flex-col gap-2"
-                        >
-                          {mdlOptions.map((m) => (
-                            <Label
-                              key={`right-${m.value}`}
-                              className="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition hover:bg-gray-100"
-                            >
-                              <RadioGroupItem value={String(m.value)} />
-                              <span className="text-lg">{m.icon}</span>
-                              <span className={`rounded px-2 py-1 text-white text-xs ${m.color}`}>{m.label}</span>
-                            </Label>
-                          ))}
-                        </RadioGroup>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
-                      <h3 className="mb-4 font-semibold text-gray-700 text-lg">MDL</h3>
-                      <RadioGroup
-                        value={String((scores[current.key] as BodyScore).mdl)}
-                        onValueChange={(v) => updateBody("mdl", Number(v))}
-                        className="flex flex-col gap-2"
-                      >
-                        {mdlOptions.map((m) => (
-                          <Label
-                            key={m.value}
-                            className="flex cursor-pointer items-center gap-3 rounded-lg p-2 transition hover:bg-gray-100"
+                    )}
+
+                    {/* MDL */}
+                    {"isBilateral" in current && current.isBilateral ? (
+                      <div className="grid grid-cols-2 gap-4 rounded-xl border bg-white p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                        <div>
+                          <h3 className="mb-3 border-b pb-2 font-semibold text-gray-700 text-sm">MDL - Left</h3>
+                          <RadioGroup
+                            value={String((scores[current.key] as BodyScore).mdlLeft)}
+                            onValueChange={(v) => updateBody("mdlLeft", Number(v))}
+                            className="flex flex-col gap-2"
                           >
-                            <RadioGroupItem value={String(m.value)} />
-                            <span className="text-xl">{m.icon}</span>
-                            <span className={`rounded px-2 py-1 text-sm text-white ${m.color}`}>{m.label}</span>
-                          </Label>
-                        ))}
-                      </RadioGroup>
-                    </div>
-                  )}
+                            {mdlOptions.map((m) => (
+                              <Label
+                                key={`left-${m.value}`}
+                                className="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition hover:bg-gray-100"
+                              >
+                                <RadioGroupItem value={String(m.value)} />
+                                <span className="text-lg">{m.icon}</span>
+                                <span className={`rounded px-2 py-1 text-white text-xs ${m.color}`}>{m.label}</span>
+                              </Label>
+                            ))}
+                          </RadioGroup>
+                        </div>
+                        <div>
+                          <h3 className="mb-3 border-b pb-2 font-semibold text-gray-700 text-sm">MDL - Right</h3>
+                          <RadioGroup
+                            value={String((scores[current.key] as BodyScore).mdlRight)}
+                            onValueChange={(v) => updateBody("mdlRight", Number(v))}
+                            className="flex flex-col gap-2"
+                          >
+                            {mdlOptions.map((m) => (
+                              <Label
+                                key={`right-${m.value}`}
+                                className="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition hover:bg-gray-100"
+                              >
+                                <RadioGroupItem value={String(m.value)} />
+                                <span className="text-lg">{m.icon}</span>
+                                <span className={`rounded px-2 py-1 text-white text-xs ${m.color}`}>{m.label}</span>
+                              </Label>
+                            ))}
+                          </RadioGroup>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                        <h3 className="mb-4 font-semibold text-gray-700 text-lg">MDL</h3>
+                        <RadioGroup
+                          value={String((scores[current.key] as BodyScore).mdl)}
+                          onValueChange={(v) => updateBody("mdl", Number(v))}
+                          className="flex flex-col gap-2"
+                        >
+                          {mdlOptions.map((m) => (
+                            <Label
+                              key={m.value}
+                              className="flex cursor-pointer items-center gap-3 rounded-lg p-2 transition hover:bg-gray-100"
+                            >
+                              <RadioGroupItem value={String(m.value)} />
+                              <span className="text-xl">{m.icon}</span>
+                              <span className={`rounded px-2 py-1 text-sm text-white ${m.color}`}>{m.label}</span>
+                            </Label>
+                          ))}
+                        </RadioGroup>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
               </div>
             ) : current.key === "load" ? (
               <div className="rounded-xl border p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
@@ -1028,7 +1026,7 @@ const submitAssessment = async () => {
               Previous
             </Button>
 
-          <Button
+            <Button
               disabled={isUploading}
               onClick={step === steps.length - 1 ? submitAssessment : next}
               className="px-6 py-3 font-semibold hover:bg-blue-100"
