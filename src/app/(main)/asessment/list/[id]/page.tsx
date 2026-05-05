@@ -148,14 +148,25 @@ export default function DetailPage() {
                           <td className="p-4 font-semibold text-gray-700 uppercase">{s.step_key}</td>
                           <td className="p-4 text-center">{s.posture_score ?? "-"}</td>
                           <td className="p-4 text-center">{s.repetition_score ?? "-"}</td>
-                       <td className="p-4 text-center">
-                          {
-                            // Cek dulu apakah ini bagian tubuh bilateral (punya kiri/kanan)
-                            (s.mdl_left !== null && s.mdl_right !== null) 
-                              ? `L:${s.mdl_left} | R:${s.mdl_right}` 
-                              // Jika bukan bilateral, cek apakah mdl_score ada (termasuk angka 0)
-                              : (s.mdl_score !== null ? s.mdl_score : "-")
-                          }
+                      <td className="p-4 text-center">
+                          {(() => {
+                            // 1. Daftar bagian tubuh yang punya sisi Kiri dan Kanan (Bilateral)
+                            const bilateralKeys = ["shoulder", "lowerArm", "wrist", "knee", "leg", "handGrip"];
+
+                            // 2. Jika bagian tubuh saat ini ada di daftar bilateral
+                            if (bilateralKeys.includes(s.step_key)) {
+                              return `L:${s.mdl_left ?? 0} | R:${s.mdl_right ?? 0}`;
+                            }
+
+                            // 3. Jika bukan bilateral (seperti Neck atau Back), tampilkan mdl_score tunggal
+                            // Kita gunakan check !== null agar angka 0 tetap muncul dan tidak dianggap "-"
+                            if (s.mdl_score !== null && s.mdl_score !== undefined) {
+                              return s.mdl_score;
+                            }
+
+                            // 4. Jika benar-benar tidak ada data (misal pada baris task duration)
+                            return "-";
+                          })()}
                         </td>
                           <td className="p-4 text-center font-medium text-blue-600">{s.task_value ?? "-"}</td>
                             <td className="p-4 text-center">
