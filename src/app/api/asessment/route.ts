@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
     const insertScoreQuery = `
       INSERT INTO assessment_scores (
         assessment_id, step_key, step_type, posture_score, repetition_score, 
-        mdl_score, mdl_left, mdl_right, task_value
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+        mdl_score, mdl_left, mdl_right, task_value,image_url
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 ,$10);
     `;
 
     const taskKeys = ["taskDuration", "load", "jobDemand", "jobSatisfaction", "socialSupport"];
@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
       const mdlLeft = isTask ? null : s.mdlLeft;
       const mdlRight = isTask ? null : s.mdlRight;
       const taskValue = isTask ? s.value : null;
+      const imageUrl = s.image_url || null;
 
       await client.query(insertScoreQuery, [
         assessmentId,
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
         mdlLeft,
         mdlRight,
         taskValue,
+        imageUrl
       ]);
     }
 

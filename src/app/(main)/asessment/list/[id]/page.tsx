@@ -131,6 +131,7 @@ export default function DetailPage() {
                       <th className="p-4 text-center font-medium">Repetition</th>
                       <th className="p-4 text-center font-medium">MDL (L/R)</th>
                       <th className="p-4 text-center font-medium">Task Value</th>
+                      <th className="p-4 font-medium text-center">Photo Posture</th>
                       <th className="p-4 text-center font-medium">Row Total</th>
                     </tr>
                   </thead>
@@ -151,6 +152,19 @@ export default function DetailPage() {
                             {s.mdl_score ?? (s.mdl_left !== null ? `L:${s.mdl_left} | R:${s.mdl_right}` : "-")}
                           </td>
                           <td className="p-4 text-center font-medium text-blue-600">{s.task_value ?? "-"}</td>
+                            <td className="p-4 text-center">
+                              {s.image_url ? (
+                                <a href={s.image_url} target="_blank" rel="noreferrer">
+                                  <img 
+                                    src={s.image_url} 
+                                    alt={`Foto ${s.step_key}`} 
+                                    className="h-16 w-16 object-cover rounded-md border shadow-sm mx-auto hover:scale-110 transition-transform cursor-pointer"
+                                  />
+                                </a>
+                              ) : (
+                                <span className="text-gray-400 text-xs">- No Foto -</span>
+                              )}
+                            </td>
                           <td className="bg-gray-50 p-4 text-center font-bold text-gray-900">{rowTotal}</td>
                         </tr>
                       );

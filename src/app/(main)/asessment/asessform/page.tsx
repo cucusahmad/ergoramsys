@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { createClient } from "@supabase/supabase-js"; // 👉 Tambahkan ini
 
 /* ================= TYPES ================= */
 
@@ -42,6 +43,10 @@ type TaskScore = {
 type ScoreType = BodyScore | TaskScore;
 
 type StepKey = (typeof steps)[number]["key"];
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 /* ================= STEPS ================= */
 
@@ -245,6 +250,19 @@ export default function ErgonomicPage() {
   const [screen, setScreen] = useState<"form" | "assessment" | "result">("form");
   const [step, setStep] = useState(0);
 
+  const [images, setImages] = useState<Record<string, File | null>>({});
+  const [previews, setPreviews] = useState<Record<string, string>>({});
+  const [isUploading, setIsUploading] = useState(false); // Untuk tombol loading
+
+  // 👉 Fungsi untuk menyimpan gambar & membuat preview
+  const handleImageChange = (stepKey: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImages((prev) => ({ ...prev, [stepKey]: file }));
+      setPreviews((prev) => ({ ...prev, [stepKey]: URL.createObjectURL(file) }));
+    }
+  };
+
   // Data Biodata Baru
   const [userInfo, setUserInfo] = useState<UserInfo>({
     observerName: "Zayyinul Hayati Zen",
@@ -367,23 +385,55 @@ export default function ErgonomicPage() {
   /* ================= UI STYLES ================= */
   const inputClass =
     "flex h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 shadow-sm";
-  const submitAssessment = async () => {
+const submitAssessment = async () => {
+    setIsUploading(true);
     try {
+      // 1. Upload semua gambar ke Supabase dulu
+      let uploadedImageUrls: Record<string, string> = {};
+
+      for (const stepKey in images) {
+        const file = images[stepKey];
+        if (file) {
+          const fileName = `${Date.now()}-${stepKey}-${file.name.replace(/\s+/g, '-')}`;
+          const { data, error } = await supabase.storage
+            .from("assessment_images") // Pastikan nama bucket ini benar
+            .upload(fileName, file);
+
+          if (!error) {
+            const { data: publicUrlData } = supabase.storage
+              .from("assessment_images")
+              .getPublicUrl(fileName);
+            uploadedImageUrls[stepKey] = publicUrlData.publicUrl;
+          }
+        }
+      }
+
+      // 2. Gabungkan URL gambar ke dalam variabel scores
+      const finalScores = { ...scores };
+      for (const key in finalScores) {
+        if (uploadedImageUrls[key]) {
+          // Menambahkan image_url ke dalam masing-masing skor
+          (finalScores[key as StepKey] as any).image_url = uploadedImageUrls[key];
+        }
+      }
+
+      // 3. Simpan ke database
       const response = await fetch("/api/asessment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userInfo, scores, totalScore, riskLevel }),
+        body: JSON.stringify({ userInfo, scores: finalScores, totalScore, riskLevel }),
       });
 
       if (response.ok) {
-        alert("Evaluasi berhasil disimpan ke database!");
-        setScreen("result"); // Pindah ke layar hasil setelah sukses
+        setScreen("result");
       } else {
-        alert("Gagal menyimpan data.");
+        alert("Gagal menyimpan data ke database.");
       }
     } catch (error) {
       console.error("Error:", error);
       alert("Terjadi kesalahan jaringan.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -739,11 +789,39 @@ export default function ErgonomicPage() {
             <Progress value={((step + 1) / steps.length) * 100} className="mt-4" />
           </CardHeader>
 
-          <CardContent className="space-y-6">
+        <CardContent className="space-y-6">
             {current.type === "body" ? (
-              <div className="grid gap-8 md:grid-cols-2">
-                {/* POSTURE */}
-                <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+              <div className="space-y-6"> {/* 👉 Bungkus dengan div space-y-6 ini */}
+                
+                {/* 👉 UI UPLOAD GAMBAR MULAI DI SINI */}
+                <div className="rounded-xl border border-blue-100 bg-blue-50/40 p-5 shadow-sm">
+                  <h3 className="mb-3 font-semibold text-blue-800 text-lg">
+                    Upload Foto Postur {current.title} (Opsional)
+                  </h3>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(current.key, e)}
+                    className="block w-full text-sm text-slate-500 file:mr-4 file:rounded-full file:border-0 file:bg-blue-100 file:px-4 file:py-2 file:font-semibold file:text-blue-700 transition-colors hover:file:bg-blue-200"
+                  />
+                  {previews[current.key] && (
+                    <div className="mt-4">
+                      <Image
+                        src={previews[current.key]}
+                        alt={`Preview ${current.title}`}
+                        width={250}
+                        height={200}
+                        className="max-h-48 rounded-xl border border-slate-200 object-cover shadow-sm"
+                      />
+                    </div>
+                  )}
+                </div>
+                {/* 👉 UI UPLOAD GAMBAR SELESAI */}
+
+                <div className="grid gap-8 md:grid-cols-2">
+                  {/* POSTURE */}
+                  <div className="rounded-xl border p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                    {/* ... (kode posture yang lama biarkan saja) ... */}
                   <h3 className="mb-4 font-semibold text-gray-700 text-lg">Posture</h3>
                   <RadioGroup
                     value={String((scores[current.key] as BodyScore).posture)}
@@ -860,6 +938,7 @@ export default function ErgonomicPage() {
                   )}
                 </div>
               </div>
+              </div>
             ) : current.key === "load" ? (
               <div className="rounded-xl border p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
                 <h3 className="mb-4 border-b pb-2 font-semibold text-gray-700 text-lg">1. Select Gender</h3>
@@ -949,11 +1028,12 @@ export default function ErgonomicPage() {
               Previous
             </Button>
 
-            <Button
+          <Button
+              disabled={isUploading}
               onClick={step === steps.length - 1 ? submitAssessment : next}
               className="px-6 py-3 font-semibold hover:bg-blue-100"
             >
-              {step === steps.length - 1 ? "Save & Show Result" : "Next"}
+              {isUploading ? "Uploading Data..." : step === steps.length - 1 ? "Save & Show Result" : "Next"}
             </Button>
           </div>
         </Card>

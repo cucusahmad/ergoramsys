@@ -30,7 +30,7 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ id: st
 
     // 2. Ambil data Detail Skor (assessment_scores)
     const scoreQuery = `
-      SELECT step_key, step_type, posture_score, repetition_score, mdl_score, mdl_left, mdl_right, task_value
+      SELECT step_key, step_type, posture_score, repetition_score, mdl_score, mdl_left, mdl_right, task_value,image_url
       FROM assessment_scores
       WHERE assessment_id = $1
     `;
