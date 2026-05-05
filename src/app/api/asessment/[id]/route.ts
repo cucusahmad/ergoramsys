@@ -54,3 +54,40 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ id: st
     if (client) client.release();
   }
 }
+
+// Tambahkan di bagian bawah file src/app/api/asessment/[id]/route.ts
+
+// Perhatikan bagian "Promise<{ id: string }>" dan "await params"
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> } // 👉 1. Ubah tipe datanya menjadi Promise
+) {
+  let client;
+  try {
+    // 👉 2. Tambahkan 'await' sebelum mengekstrak id
+    const { id } = await params; 
+    
+    client = await pool.connect();
+    
+    // Mulai transaksi
+    await client.query("BEGIN");
+
+    // 1. Hapus data anak (scores) terlebih dahulu agar tidak kena error Foreign Key
+    await client.query("DELETE FROM assessment_scores WHERE assessment_id = $1", [id]);
+
+    // 2. Hapus data induk (assessment)
+    await client.query("DELETE FROM assessments WHERE id = $1", [id]);
+
+    // Simpan perubahan
+    await client.query("COMMIT");
+
+    return NextResponse.json({ success: true, message: "Data berhasil dihapus!" }, { status: 200 });
+  } catch (error) {
+    if (client) await client.query("ROLLBACK"); // Batalkan jika terjadi error
+    console.error("🔥 ERROR DELETE DATABASE 🔥", error);
+    return NextResponse.json({ success: false, message: "Gagal menghapus data." }, { status: 500 });
+  } finally {
+    if (client) client.release();
+  }
+}

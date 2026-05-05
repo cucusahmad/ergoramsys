@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 type AssessmentList = {
   id: string;
@@ -19,6 +20,35 @@ type AssessmentList = {
 export default function AssessmentListPage() {
   const [data, setData] = useState<AssessmentList[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter(); // Gunakan router untuk me-refresh halaman
+
+
+  // 👉 Fungsi untuk menghapus data
+  const handleDelete = async (id: string) => {
+    // Munculkan pop-up konfirmasi agar tidak terhapus tidak sengaja
+    const confirmDelete = window.confirm("Are you sure you want to delete this evaluation? This data cannot be recovered.");
+    
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`/api/asessment/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        alert("The data has been successfully deleted.!");
+        // Refresh halaman agar data yang dihapus hilang dari tabel
+        router.refresh(); 
+        
+        // (Atau jika Anda menggunakan state array data, Anda bisa mem-filter state tersebut)
+      } else {
+        alert("Failed to delete the data.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan jaringan.");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,7 +158,16 @@ export default function AssessmentListPage() {
                               Detail
                             </Button>
                           </Link>
+
+                          {/* 👉 Tombol Delete Baru */}
+                        <button 
+                          onClick={() => handleDelete(item.id)} // Panggil fungsi dengan mengirimkan ID
+                          className="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors"
+                        >
+                          Delete
+                        </button>
                         </td>
+                        
                       </tr>
                     ))}
                   </tbody>
