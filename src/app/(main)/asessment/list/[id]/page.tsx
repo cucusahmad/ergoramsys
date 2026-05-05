@@ -148,9 +148,15 @@ export default function DetailPage() {
                           <td className="p-4 font-semibold text-gray-700 uppercase">{s.step_key}</td>
                           <td className="p-4 text-center">{s.posture_score ?? "-"}</td>
                           <td className="p-4 text-center">{s.repetition_score ?? "-"}</td>
-                          <td className="p-4 text-center">
-                            {s.mdl_score ?? (s.mdl_left !== null ? `L:${s.mdl_left} | R:${s.mdl_right}` : "-")}
-                          </td>
+                       <td className="p-4 text-center">
+                          {
+                            // Cek dulu apakah ini bagian tubuh bilateral (punya kiri/kanan)
+                            (s.mdl_left !== null && s.mdl_right !== null) 
+                              ? `L:${s.mdl_left} | R:${s.mdl_right}` 
+                              // Jika bukan bilateral, cek apakah mdl_score ada (termasuk angka 0)
+                              : (s.mdl_score !== null ? s.mdl_score : "-")
+                          }
+                        </td>
                           <td className="p-4 text-center font-medium text-blue-600">{s.task_value ?? "-"}</td>
                             <td className="p-4 text-center">
                               {s.image_url ? (
