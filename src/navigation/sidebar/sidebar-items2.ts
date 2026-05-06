@@ -48,18 +48,4 @@ export const sidebarItems2: NavGroup[] = [
       },
     ],
   },
-  {
-    id: 3,
-    label: "Legacy",
-    items: [
-      {
-        title: "asessments",
-        url: "/asessment/default-v1",
-        subItems: [
-          { title: "Default Form", url: "/asessment/default-v1" },
-          { title: "Advance Form", url: "/asessment/crm-v1" },
-        ],
-      },
-    ],
-  },
 ];
